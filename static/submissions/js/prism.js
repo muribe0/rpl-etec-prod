@@ -1,0 +1,1 @@
+console.log("prism.js loaded and static served automatically");
