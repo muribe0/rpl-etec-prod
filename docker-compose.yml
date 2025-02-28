@@ -27,8 +27,13 @@ services:
       - .:/app # bind mount the current directory to /app in the container
     image: app:django # name of the image
     container_name: django_container # name of the container
-    command: [ "./scripts/wait-for-it.sh", "db:5432", "--",  # Wait for the database to be ready before starting Django
-               "python", "manage.py", "runserver", "0.0.0.0:8000" ]
+    command: >
+      bash -c "
+        ./scripts/wait-for-it.sh db:5432 &&
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        uwsgi --ini /app/config/uwsgi/uwsgi.ini
+      "
     environment:
       - DJANGO_SETTINGS_MODULE=rpl.settings
       - POSTGRES_DB=postgres
@@ -50,4 +55,15 @@ services:
     depends_on:
       - redis
       - db
+      - rpl
+
+  nginx:
+    image: nginx
+    restart: always
+    volumes:
+      - ./config/nginx:/etc/nginx/templates
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
       - rpl
