@@ -1,0 +1,40 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data # bind mount the data so that it persists even if the container is removed
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: postgres_db
+
+
+  rpl:
+    build: . # current folder
+    restart: always
+    volumes:
+      - .:/app # bind mount the current directory to /app in the container
+    ports:
+      - "8000:8000" # expose port 8000 on the host and bind it to port 8000 in the container
+    image: app:django # name of the image
+    container_name: django_container # name of the container
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A rpl worker --loglevel=info # turn info off in production
+    depends_on:
+      - redis
+      - db
+      - rpl
