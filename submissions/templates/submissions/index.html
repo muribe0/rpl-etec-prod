@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block script %}
+    <script src="{% static 'submissions/js/prism.js' %}"></script>
+{% endblock %}
+
 {% block title %}rpl{% endblock %}
 
 {% block content %}
