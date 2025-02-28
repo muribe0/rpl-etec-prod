@@ -22,7 +22,7 @@ COPY . .
 COPY ./scripts /scripts
 
 # Make the scripts accessible by all users
-#RUN #chmod +x /scripts/* /scripts/wait-for-it.sh
+RUN chmod +x /scripts/* /scripts/wait-for-it.sh
 
 
 #CMD ["entrypoint.sh"]
