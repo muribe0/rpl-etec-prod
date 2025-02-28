@@ -1,7 +1,10 @@
 services:
   redis:
     image: redis
-    container_name: redis
+    restart: always
+    volumes:
+        - ./data/redis:/data # bind mount the data so that it persists even if the container is removed
+    container_name: redis_container
 
 
   db:
@@ -10,6 +13,7 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data # bind mount the data so that it persists even if the container is removed
     environment:
+      - DJANGO_SETTINGS_MODULE=rpl.settings
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -21,11 +25,15 @@ services:
     restart: always
     volumes:
       - .:/app # bind mount the current directory to /app in the container
-    ports:
-      - "8000:8000" # expose port 8000 on the host and bind it to port 8000 in the container
     image: app:django # name of the image
     container_name: django_container # name of the container
-    command: python manage.py runserver 0.0.0.0:8000
+    command: [ "./scripts/wait-for-it.sh", "db:5432", "--",  # Wait for the database to be ready before starting Django
+               "python", "manage.py", "runserver", "0.0.0.0:8000" ]
+    environment:
+      - DJANGO_SETTINGS_MODULE=rpl.settings
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
 
@@ -34,6 +42,11 @@ services:
     build:
       context: .
     command: celery -A rpl worker --loglevel=info # turn info off in production
+    environment:
+      - DJANGO_SETTINGS_MODULE=rpl.settings
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - redis
       - db
