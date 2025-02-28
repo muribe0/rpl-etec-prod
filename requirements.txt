@@ -9,6 +9,7 @@ click-repl==0.3.0
 Django==5.1.6
 kombu==5.4.2
 prompt_toolkit==3.0.50
+psycopg2-binary==2.9.10
 python-dateutil==2.9.0.post0
 redis==5.2.1
 six==1.17.0
