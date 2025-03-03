@@ -1,16 +1,16 @@
 import json
-import uuid
 
 from celery.result import AsyncResult
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from submissions.forms import CodeSubmissionForm
-from submissions.models import CodeSubmission
+from .forms import CodeSubmissionForm
+from .models import CodeSubmission
 
-from .tasks import test_code
+from .tasks import test_code, logger
 
 
 def index(request):
@@ -46,7 +46,9 @@ def submit_api(request):
         submission = CodeSubmission.objects.create(code=code)
 
         unique_id = data.get('unique_id', submission.pk)
-        res = test_code.delay(unique_id).id
+
+        # async task
+        res = test_code.delay(submission.pk).id
 
         return JsonResponse({
             "submission_id": unique_id,
@@ -62,7 +64,7 @@ def submit_api(request):
             "error": str(e)
         }, status=500)
     finally:
-        pass
+        print(CodeSubmission.objects.all().first().result)
 
 
 def results_api(request, task_id):
@@ -109,8 +111,7 @@ def suma(x,y):
     codes = [code_0, code_1, code_2]
 
     submission = CodeSubmission.objects.create(code=codes[num])
-
-    # async task
+    
     test_code.delay(submission.pk)
 
     return render(request, "submissions/submit.html", {'form': CodeSubmissionForm()})
