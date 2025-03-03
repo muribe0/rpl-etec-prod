@@ -4,30 +4,25 @@ FROM python:3.12.3-slim
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Add /scripts to the PATH environment variable
-ENV PATH="/scripts:${PATH}"
-
 # Set the working directory
 WORKDIR /app
 
-COPY ./requirements.txt /app/requirements.txt
+# Copy requirements first (for better caching)
+COPY requirements.txt /app/
 
 # Add dependencies for installing uwsgi
 RUN apt-get update -y && apt-get install -y gcc python3-dev musl-dev
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN chmod +x scripts/django-init.sh
-RUN chmod +x scripts/wait-for-it.sh
+# Copy scripts directory first
+COPY scripts/ /app/scripts/
+# Make scripts executable
+RUN chmod +x /app/scripts/django-init.sh
+RUN chmod +x /app/scripts/wait-for-it.sh
 
-# Copy the current directory contents into the container at /app
-COPY . .
-COPY ./scripts /scripts
+# Add /scripts to the PATH environment variable
+ENV PATH="/app/scripts:${PATH}"
 
-# Make the scripts accessible by all users
-RUN chmod +x /scripts/*
-RUN chmod +x /scripts/wait-for-it.sh
-RUN chmod +x /scripts/django-init.sh
-
-
-#CMD ["./scripts/entrypoint.sh"]
+# Copy the rest of the application
+COPY . /app/

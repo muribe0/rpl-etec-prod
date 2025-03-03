@@ -46,7 +46,8 @@ services:
     restart: always
     build:
       context: .
-    command: celery -A rpl worker --loglevel=info # turn info off in production
+    command: ["./scripts/wait-for-it.sh", "db:5432", "--",
+              "celery", "-A", "rpl", "worker", "--loglevel=info"] # turn info off in production
     environment:
       - DJANGO_SETTINGS_MODULE=rpl.settings
       - POSTGRES_DB=postgres
