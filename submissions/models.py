@@ -13,4 +13,6 @@ class CodeSubmission(models.Model):
     code = models.TextField(max_length=100000, default="")
     result = models.TextField(default="Codigo fallido o aun no testeado")
 
+
+    objects = models.Manager()
 # docker compose exec web python /code/manage.py migrate
