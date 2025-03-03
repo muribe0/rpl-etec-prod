@@ -4,11 +4,13 @@ from celery import shared_task
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db import transaction
 
-
+from rpl.settings import CELERY_TASK_SOFT_TIME_LIMIT, CELERY_TASK_TIME_LIMIT
 
 logger = get_task_logger(__name__)
 
-@shared_task
+
+
+@shared_task(soft_time_limit=CELERY_TASK_SOFT_TIME_LIMIT, time_limit=CELERY_TASK_TIME_LIMIT)
 def test_code(submission_id):
     """
     Test the code submission with the given ID. Modifies the submission object saving the test results.
@@ -17,7 +19,7 @@ def test_code(submission_id):
     """
     logger.info(f"\n ========= Processing submission {submission_id} ========= \n")
 
-    from .service import CodeTestingService
+    from submissions.service import CodeTestingService
     from submissions.models import CodeSubmission
 
     service = None
@@ -30,23 +32,22 @@ def test_code(submission_id):
             service = CodeTestingService(submission_id)
 
             try:
-
                 results = service.run_tests(submission_code=code)
 
                 with transaction.atomic():
-
+                    submission = CodeSubmission.objects.get(pk=submission_id)
                     submission.result = results['output']
                     submission.save()
+                    print('results:', results['output'])
                     return results['output']
 
             except SoftTimeLimitExceeded:
-                # raised 5 sec before the hard time limit (10 sec)
                 logger.warning(f"Task for submission {submission_id} is approaching timeout limit")
 
                 with transaction.atomic():
+                    submission = CodeSubmission.objects.get(pk=submission_id)
                     timeout_message = "Time out. Tu codigo tarda demasiado en ejecutarse. Revisa si no hay ciclos infinitos."
                     submission.result = timeout_message
-
                     submission.save()
                     return timeout_message
 
@@ -66,7 +67,10 @@ def test_code(submission_id):
         logger.error(f"Submission {submission_id} not found")
         return "Submission not found"
     except Exception as e:
-        logger.exception(f"Unexpected error: {e}")
+        if submission:
+            with transaction.atomic():
+                submission.result = f"Error: {str(e)}"
+                submission.save()
         return f"Error: {str(e)}"
     finally:
         if 'service' in locals():
