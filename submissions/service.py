@@ -3,8 +3,7 @@ import os
 from io import StringIO
 from contextlib import contextmanager
 import unittest
-
-from django.contrib.admin.templatetags.admin_list import results
+from celery.exceptions import SoftTimeLimitExceeded
 
 
 class CodeTestingService:
@@ -42,25 +41,58 @@ class CodeTestingService:
         finally:  # once test_dir has been used, we delete everything
             self.cleanup_directory(self.test_dir)
 
+    # define a timeout wrapper
+    @staticmethod
+    def timeout_wrapper(timeout_seconds=4):
+        from functools import wraps
+        import threading
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                result = [None]
+
+                def target():
+                    result[0] = func(*args, **kwargs)
+
+                # create thread to run target (runner.run) function
+                thread = threading.Thread(target=target)
+                # set the thread as a daemon so it is killed when the main thread is killed
+                thread.daemon = True
+                # start the thread
+                thread.start()
+                # wait for the thread to finish or timeout
+                thread.join(timeout_seconds)
+
+                # if the thread is still alive, it means it has not finished
+                if thread.is_alive():
+                    # raise this exception to let celery task handle it
+                    raise SoftTimeLimitExceeded
+
+                # if the thread has finished, return the result
+                return result[0]
+
+            return wrapper
+
+        return decorator
 
     def run_tests(self, submission_code):
 
+
         with self.create_test_environment(submission_code) as test_dir:
             loader = unittest.TestLoader()
-            # a TestSuite is a collection of test cases, test suites, or both.
-            # It is used to aggregate tests that should be executed together.
             suite = loader.discover(test_dir, pattern=f'test_solution_{self.unique_id}.py')
-            # run tests with a custom result collector
-            # The stream is the "screen" or "display" where one sees the live test execution
-            # The result of .run() is a TestResult object that contains:
-            #         self.failures = []
-            #         self.errors = []
-            #         self.testsRun = 0
-            #         self.expectedFailures = []
-            # ...
-            # print(list(os.walk(test_dir, topdown=False)))
-            full_output = StringIO()  # todo: maybe change this line
+            full_output = StringIO()
+
+            # Create a runner with custom timeout
             runner = unittest.TextTestRunner(stream=full_output, verbosity=2)
+
+            # save the original run method
+            original_run = runner.run
+
+            # replace the run method with timeout version
+            runner.run = self.timeout_wrapper(4)(original_run)
+
+            # Run the tests with the timeout-enabled run method
             result = runner.run(suite)
 
             return self.format_results(result, full_output)
@@ -75,7 +107,7 @@ class CodeTestingService:
         os.rmdir(directory)
 
     def get_test_code(self):
-        with open('testservice/testing/test_suma.py', 'r') as f:
+        with open('submissions/testing/test_suma.py', 'r') as f:
             test_code = f.read()
             return f"from solution_{self.unique_id} import suma as foo\n" + test_code
 
