@@ -5,23 +5,31 @@ from contextlib import contextmanager
 import unittest
 from celery.exceptions import SoftTimeLimitExceeded
 
+from submissions.models import CodeSubmission
+
 
 class CodeTestingService:
     def __init__(self, unique_id):
         self.unique_id = unique_id
+        try:
+            submission = CodeSubmission.objects.get(pk=unique_id)
+        except CodeSubmission.DoesNotExist:
+            raise FileNotFoundError
+        self.code = submission.code
+        self.test_code = submission.excercise.test
         self.test_dir = os.path.join(tempfile.gettempdir(), f"test_{self.unique_id}")
-        print(f"\nDIR:{self.test_dir}\n")
+
+
     def __del__(self):
         try:
             self.cleanup_directory(self.test_dir)
         except FileNotFoundError:
             pass
 
-    @contextmanager # converts the function into a context manager to be used with the 'with' statement
-    def create_test_environment(self, submission_code):
+    @contextmanager
+    def create_test_environment(self):
 
         # create unique test dir
-
         os.makedirs(self.test_dir)
 
         try:
@@ -31,10 +39,10 @@ class CodeTestingService:
 
             # write files
             with open(code_path, 'w') as f:
-                f.write(submission_code)
+                f.write(self.code())
 
             with open(code_test_path, 'w') as f:
-                f.write(self.get_test_code())
+                f.write(self.test_code)
 
             yield self.test_dir
 
@@ -75,10 +83,9 @@ class CodeTestingService:
 
         return decorator
 
-    def run_tests(self, submission_code):
+    def run_tests(self):
 
-
-        with self.create_test_environment(submission_code) as test_dir:
+        with self.create_test_environment() as test_dir:
             loader = unittest.TestLoader()
             suite = loader.discover(test_dir, pattern=f'test_solution_{self.unique_id}.py')
             full_output = StringIO()
@@ -97,6 +104,7 @@ class CodeTestingService:
 
             return self.format_results(result, full_output)
 
+
     @staticmethod
     def cleanup_directory(directory):
         for root, dirs, files in os.walk(directory, topdown=False):
@@ -106,7 +114,8 @@ class CodeTestingService:
                 os.rmdir(os.path.join(root, name))
         os.rmdir(directory)
 
-    def get_test_code(self):
+
+    def _get_file_test_code(self):
         with open('submissions/testing/test_suma.py', 'r') as f:
             test_code = f.read()
             return f"from solution_{self.unique_id} import suma as foo\n" + test_code
