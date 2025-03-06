@@ -1,0 +1,12 @@
+[
+  {
+    "model": "excercises.course",
+    "pk": 1,
+    "fields" : {
+      "title": "Taller de Algoritmos y Programación",
+      "groups": [1]
+
+    }
+
+  }
+]

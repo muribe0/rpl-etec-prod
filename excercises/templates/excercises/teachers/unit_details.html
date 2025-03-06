@@ -1,0 +1,12 @@
+{% extends 'excercises/base.html' %}
+{% load static %}
+
+{% block content %}
+    <a href="{% url 'excercise_create' unit.pk %}"></a>
+    {% for excercise in unit.excercises %}
+        {{ excercise.title }}
+        <a href="{{ excercise.get_edit_url }}">Editar</a>
+    {% empty %}
+        <p>Esta unidad aun no tiene ejercicios.</p>
+    {% endfor %}
+{% endblock %}

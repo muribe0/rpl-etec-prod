@@ -1,0 +1,16 @@
+{% extends 'excercises/base.html' %}
+
+{% block title %}
+    Mis cursos
+{% endblock %}
+
+{% block content %}
+    {% for course in courses %}
+        <a href="{{ course.get_absolute_url }}">
+            <p>{{ course.title }}</p>
+        </a>
+    {% empty %}
+        <p>No tienes cursos.</p>
+    {% endfor %}
+{% endblock %}
+

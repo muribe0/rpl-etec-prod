@@ -1,0 +1,18 @@
+{% extends 'excercises/base.html' %}
+
+{% block title %}
+    Unidades
+{% endblock %}
+
+{% block content %}
+    {% for unit in units %}
+        <p>{{ unit.title }}</p>
+        {% for excercise in unit.excercises %}
+            <p>{{ excercise.title }}</p>
+        {% empty %}
+            <p>Esta unidad no tiene ejercicios.</p>
+        {% endfor %}
+    {% empty %}
+        <p>Este curso no tiene unidades.</p>
+    {% endfor %}
+{% endblock %}
