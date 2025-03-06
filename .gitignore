@@ -1,8 +1,22 @@
-.venv
+# Python cache files
+**/__pycache__/
+**/*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+
+# Docker
 .dockerignore
 
-#db.sqlite3
+# IDE
+.idea/
 
-.idea
-/data/
-/static/
+# Database
+db.sqlite3
+
+# Data directory
+data/
+
+# Static files
+static/
