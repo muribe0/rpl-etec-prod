@@ -2,23 +2,13 @@
 {% load static %}
 
 {% block script %}
-    <script src="{% static 'excercises/js/submit.js' %}"></script>
+    <script src="{% static 'submissions/js/submit.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     <p>{{ excercise.title }}</p>
     <p>{{ excercise.statement }}</p>
 
-    <form id="submit-code-form" action="{% url 'submissions:submit' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button id="submit-btn" type="submit">Enviar</button>
-    </form>
-    <div id="results-container">
-        {{ test_result }}
-        <div id="loading-overlay"></div>
-        <pre id="result-code"></pre>
-
-    </div>
+    {% include 'submissions/includes/submit_code_form.html' %}
 
 {% endblock %}
