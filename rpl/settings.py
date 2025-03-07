@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-e$n@oe8792&68dp&f+)9f%z170!z)@rc6hvdusjb=b^6gbtr=^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -145,7 +145,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 10
 CELERY_TASK_SOFT_TIME_LIMIT = CELERY_TASK_TIME_LIMIT - 5 
-CELERY_WORKER_PREFETCH_MULTIPLIER = 1  # Process one task at a time
+CELERY_WORKER_PREFETCH_MULTIPLIER = 2  # Process one task at a time
 
 # REDIS
 
