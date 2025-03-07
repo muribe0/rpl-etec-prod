@@ -1,17 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'excercises/base.html' %}
 {% load static %}
 
-{% block title %}
-    rpl
-{% endblock %}
-
 {% block script %}
-{#    <script src="{% static 'submissions/js/submit.js' %}"></script>#}
+    <script src="{% static 'excercises/js/submit.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <h1>rpl</h1>
-    <p>Bienvenido!</p>
+    <p>{{ excercise.title }}</p>
+    <p>{{ excercise.statement }}</p>
+
     <form id="submit-code-form" action="{% url 'submissions:submit' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
