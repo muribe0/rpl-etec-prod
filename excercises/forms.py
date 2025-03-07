@@ -3,6 +3,7 @@ from django import forms
 
 class FileForm(forms.ModelForm):
     class Meta:
+        model = File
         fields = '__all__'
 
         labels = {
@@ -22,6 +23,7 @@ class FileForm(forms.ModelForm):
 
 class UnitForm(forms.ModelForm):
     class Meta:
+        model = Unit
         fields = [
             'title', 'description'
         ]
@@ -34,6 +36,7 @@ class UnitForm(forms.ModelForm):
 
 class ExcerciseForm(forms.ModelForm):
     class Meta:
+        model = Excercise
         fields = [
             'title',
             'statement',
