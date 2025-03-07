@@ -9,22 +9,17 @@ from submissions.models import CodeSubmission
 
 
 class CodeTestingService:
-    def __init__(self, unique_id):
-        self.unique_id = unique_id
+    def __init__(self, submission_id):
+        self.unique_id = submission_id
+        self.test_dir = os.path.join(tempfile.gettempdir(), f"test_{self.unique_id}")
         try:
-            submission = CodeSubmission.objects.get(pk=unique_id)
+            self.submission = CodeSubmission.objects.get(pk=self.unique_id)
         except CodeSubmission.DoesNotExist:
             raise FileNotFoundError
-        self.code = submission.code
-        self.test_code = submission.excercise.test
-        self.test_dir = os.path.join(tempfile.gettempdir(), f"test_{self.unique_id}")
 
 
     def __del__(self):
-        try:
-            self.cleanup_directory(self.test_dir)
-        except FileNotFoundError:
-            pass
+        self.cleanup_directory(self.test_dir)
 
     @contextmanager
     def create_test_environment(self):
@@ -34,15 +29,20 @@ class CodeTestingService:
 
         try:
             # create files
-            code_path = os.path.join(self.test_dir, f'solution_{self.unique_id}.py')
+            solution_path = os.path.join(self.test_dir, f'solution_{self.unique_id}.py')
             code_test_path = os.path.join(self.test_dir, f'test_solution_{self.unique_id}.py')
 
             # write files
-            with open(code_path, 'w') as f:
-                f.write(self.code())
+            with open(solution_path, 'w') as f:
+                f.write(self.submission.code)
 
             with open(code_test_path, 'w') as f:
-                f.write(self.test_code)
+                try:
+                    excercise = self.submission.excercise
+                except:
+                    raise ValueError("Submission does not have an excercise")
+
+                f.write(excercise.get_complete_test_code(f'solution_{self.unique_id}.py'))
 
             yield self.test_dir
 
