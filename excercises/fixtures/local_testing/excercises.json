@@ -1,0 +1,15 @@
+[
+  {
+    "model": "excercises.excercise",
+    "pk": 1,
+    "fields": {
+      "title": "Suma",
+      "statement": "Crea una función que reciba dos números (parámetros) y devuelva la suma de ambos.\nLa función debe llamarse `suma()`.",
+      "function_name": "suma",
+      "test": "",
+      "solution": "def suma(a, b):\n    return a + b",
+
+      "unit": 1
+    }
+  }
+]

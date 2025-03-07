@@ -4,6 +4,7 @@ from . import views
 app_name = 'submissions'
 
 urlpatterns = [
-        path('', views.index, name='index'),
+        path('submit/', views.submit_api, name='submit_api'),
+        path('results/<str:task_id>', views.results_api, name='results_api'),
 
-        ]
+]

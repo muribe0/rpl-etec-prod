@@ -1,0 +1,12 @@
+<form id="submit-code-form" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button id="submit-btn" type="submit">Enviar</button>
+</form>
+<div id="results-container">
+    {{ test_result }}
+    <div id="loading-overlay"></div>
+    <h2 id="result-title"></h2>
+    <pre id="result-code"></pre>
+
+</div>

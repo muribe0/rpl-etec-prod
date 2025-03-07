@@ -1,0 +1,14 @@
+{% extends 'excercises/base.html' %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'submissions/js/submit.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <p>{{ excercise.title }}</p>
+    <p>{{ excercise.statement }}</p>
+
+    {% include 'submissions/includes/submit_code_form.html' %}
+
+{% endblock %}
