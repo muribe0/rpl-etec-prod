@@ -38,11 +38,11 @@ class CodeTestingService:
 
             with open(code_test_path, 'w') as f:
                 try:
-                    excercise = self.submission.excercise
+                    exercise = self.submission.exercise
                 except:
-                    raise ValueError("Submission does not have an excercise")
+                    raise ValueError("Submission does not have an exercise")
 
-                f.write(excercise.get_complete_test_code(f'solution_{self.unique_id}.py'))
+                f.write(exercise.get_complete_test_code(f'solution_{self.unique_id}.py'))
 
             yield self.test_dir
 

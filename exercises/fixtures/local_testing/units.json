@@ -1,0 +1,10 @@
+[
+  {
+    "model": "exercises.unit",
+    "pk": 1,
+    "fields": {
+      "title": "Unidad 1",
+      "course": 1
+    }
+  }
+]

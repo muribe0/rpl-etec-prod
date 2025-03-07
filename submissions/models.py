@@ -1,5 +1,5 @@
 from django.db import models
-from excercises.models import Excercise
+from exercises.models import Exercise
 
 # Create your models here.
 class CodeSubmission(models.Model):
@@ -8,7 +8,7 @@ class CodeSubmission(models.Model):
                                 # related_name="user_submissions")
     created_at = models.DateTimeField(auto_now_add=True)
 
-    excercise = models.ForeignKey(Excercise,
+    exercise = models.ForeignKey(Exercise,
                                   on_delete=models.CASCADE,
                                   related_name="submissions",
                                   )

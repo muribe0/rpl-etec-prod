@@ -7,7 +7,7 @@ from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from excercises.models import Excercise
+from exercises.models import Exercise
 from .forms import CodeSubmissionForm
 from .models import CodeSubmission
 
@@ -23,21 +23,21 @@ def submit_api(request):
     :param request: POST request with JSON data in its body. The JSON data must contain a 'code' key with the code to test.
     :return: JSON response with the submission_id and task_id of the task that was created to test the code.
     """
-    # TODO: check authenticity of request (correct user, excercise, etc)
+    # TODO: check authenticity of request (correct user, exercise, etc)
     try:
         data = json.loads(request.body)
         code = data.get('code', "")
-        excercise_pk = data.get('excercise_pk', None)
+        exercise_pk = data.get('exercise_pk', None)
 
-        if not excercise_pk:
+        if not exercise_pk:
             return JsonResponse({
-                "error": "Excercise pk not provided"
+                "error": "Exercise pk not provided"
             }, status=400)
 
         try:
             with transaction.atomic():
-                excercise = Excercise.objects.get(pk=excercise_pk)
-                submission = CodeSubmission.objects.create(excercise=excercise,
+                exercise = Exercise.objects.get(pk=exercise_pk)
+                submission = CodeSubmission.objects.create(exercise=exercise,
                                                    code=code)
         except Exception as e:
             return JsonResponse({

@@ -1,0 +1,15 @@
+{% extends 'exercises/base.html' %}
+{% load static %}
+
+{% block title %}
+    Crear ejercicio
+{% endblock %}
+
+{% block content %}
+    <h1>Crear unidad</h1>
+    <form action="{{ course.get_unit_create_url }}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear</button>
+    </form>
+{% endblock %}

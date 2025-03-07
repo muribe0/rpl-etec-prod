@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'submissions.apps.SubmissionsConfig',
-    'excercises.apps.ExcercisesConfig'
+    'exercises.apps.ExercisesConfig'
 ]
 
 MIDDLEWARE = [
