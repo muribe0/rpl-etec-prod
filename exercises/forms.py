@@ -1,4 +1,4 @@
-from .models import File, Course, Unit, Excercise
+from .models import File, Course, Unit, Exercise
 from django import forms
 
 class FileForm(forms.ModelForm):
@@ -34,9 +34,9 @@ class UnitForm(forms.ModelForm):
         }
 
 
-class ExcerciseForm(forms.ModelForm):
+class ExerciseForm(forms.ModelForm):
     class Meta:
-        model = Excercise
+        model = Exercise
         fields = [
             'title',
             'statement',

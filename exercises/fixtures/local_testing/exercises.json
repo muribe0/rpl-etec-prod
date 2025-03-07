@@ -1,6 +1,6 @@
 [
   {
-    "model": "excercises.excercise",
+    "model": "exercises.exercise",
     "pk": 1,
     "fields": {
       "title": "Suma",

@@ -1,4 +1,4 @@
-{% extends 'excercises/base.html' %}
+{% extends 'exercises/base.html' %}
 {% load static %}
 
 {% block script %}
@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block content %}
-    <p>{{ excercise.title }}</p>
-    <p>{{ excercise.statement }}</p>
+    <p>{{ exercise.title }}</p>
+    <p>{{ exercise.statement }}</p>
 
     {% include 'submissions/includes/submit_code_form.html' %}
 

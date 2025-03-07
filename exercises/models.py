@@ -16,7 +16,7 @@ class Course(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     groups = models.ManyToManyField(Group,
-                              related_name='courses',
+                                    related_name='courses',
                                     blank=True)
 
     objects = manager.Manager()
@@ -40,15 +40,15 @@ class Course(models.Model):
 
     def get_url(self, view):
         return reverse(
-            f'excercises:{view}',
+            f'exercises:{view}',
             args=[self.slug]
         )
 
     def get_absolute_url(self):
         return self.get_url('course_details')
 
-    def get_excercise_create_url(self):
-        return self.get_url('excercise_create')
+    def get_exercise_create_url(self):
+        return self.get_url('exercise_create')
 
     def get_unit_create_url(self):
         return self.get_url('unit_create')
@@ -69,7 +69,7 @@ class Unit(models.Model):
     def get_url(self, view):
         return reverse(
 
-            f'excercises:{view}',
+            f'exercises:{view}',
             args=[self.course.slug, self.pk]
         )
 
@@ -83,7 +83,7 @@ class Unit(models.Model):
         super().save( *args, *kwargs)
 
 
-class Excercise(models.Model):
+class Exercise(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, blank=True, null=True)
     statement = models.TextField(default="Consigna en el código")
@@ -97,7 +97,7 @@ class Excercise(models.Model):
     # files = models.ManyToManyField(File, blank=True, null=True)
     unit = models.ForeignKey(Unit,
                              on_delete=models.CASCADE,
-                             related_name="excercises")
+                             related_name="exercises")
 
     objects = manager.Manager()
 
@@ -117,15 +117,15 @@ class Excercise(models.Model):
 
     def get_url(self, view):
         return reverse(
-            f'excercises:{view}',
+            f'exercises:{view}',
             args=[self.unit.course.slug , self.pk]
         )
 
     def get_absolute_url(self):
-        return self.get_url('excercise_details')
+        return self.get_url('exercise_details')
 
     def get_edit_url(self):
-        return self.get_url('excercise_edit')
+        return self.get_url('exercise_edit')
 
     def get_complete_test_code(self, solution_file_path):
         return f"from {solution_file_path} import {self.function_name} as foo\n{self.test}"

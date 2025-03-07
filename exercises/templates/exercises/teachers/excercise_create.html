@@ -1,4 +1,4 @@
-{% extends 'excercises/base.html' %}
+{% extends 'exercises/base.html' %}
 {% load static %}
 
 {% block title %}
@@ -7,7 +7,7 @@
 
 {% block content %}
     <h1>Crear ejercicio</h1>
-    <form action="{{ course.get_excercise_create_url }}" method="post">
+    <form action="{{ course.get_exercise_create_url }}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Crear</button>

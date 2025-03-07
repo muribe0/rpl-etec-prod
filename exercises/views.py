@@ -1,10 +1,7 @@
-from http.client import HTTPResponse
-
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from .forms import ExcerciseForm, UnitForm
-from .models import File, Course, Unit, Excercise
+from .forms import ExerciseForm, UnitForm
+from .models import File, Course, Unit, Exercise
 from submissions.models import CodeSubmission
 from submissions.forms import CodeSubmissionForm
 
@@ -23,7 +20,7 @@ def course_list(request):
         'courses': courses,
     }
     return render(request,
-                  'excercises/common/course_list.html',
+                  'exercises/common/course_list.html',
                   context)
 
 
@@ -37,7 +34,7 @@ def course_details(request, course_slug):
     }
 
     return render(request,
-                  'excercises/common/course_details.html',
+                  'exercises/common/course_details.html',
                   context)
 
 
@@ -51,10 +48,10 @@ def unit_create(request, course_slug):
             unit = form.instance
             unit.course = course
             unit.save()
-            return redirect('excercises:course_details', course_slug)
+            return redirect('exercises:course_details', course_slug)
 
     return render(request,
-                  'excercises/teachers/unit_create.html',
+                  'exercises/teachers/unit_create.html',
                   {'form': form,
                    'course': course})
 
@@ -68,62 +65,62 @@ def unit_edit(request, course_slug, unit_pk):
             return redirect(unit.course.get_absolute_url())
 
     return render(request,
-                  'excercises/teachers/unit_edit.html',
+                  'exercises/teachers/unit_edit.html',
                   {'form': form,
                    'unit': unit},
                   )
 
-def excercise_details(request, course_slug, excercise_pk):
+def exercise_details(request, course_slug, exercise_pk):
 
-    excercise = Excercise.objects.get(pk=excercise_pk)
+    exercise = Exercise.objects.get(pk=exercise_pk)
 
-    if excercise.unit.course != Course.objects.get(slug=course_slug):
-        return redirect(excercise.unit.course.get_absolute_url())
+    if exercise.unit.course != Course.objects.get(slug=course_slug):
+        return redirect(exercise.unit.course.get_absolute_url())
 
     form = CodeSubmissionForm()
     if request.method == 'POST':
         form = CodeSubmissionForm(request.POST)
 
     context = {
-        'excercise': excercise,
+        'exercise': exercise,
         'form': form,
     }
 
     return render(request,
-                  'excercises/common/excercise_details.html',
+                  'exercises/common/exercise_details.html',
                   context)
 
 
-def excercise_create(request, course_slug):
+def exercise_create(request, course_slug):
     course = Course.objects.get(slug=course_slug)
-    form = ExcerciseForm()
+    form = ExerciseForm()
     if request.method == 'POST':
-        form = ExcerciseForm(request.POST)
+        form = ExerciseForm(request.POST)
         if form.is_valid():
             form.save()
-            excercise = form.instance
-            excercise.course = course
-            excercise.save()
-            return redirect('excercises:course_details', course_slug)
+            exercise = form.instance
+            exercise.course = course
+            exercise.save()
+            return redirect('exercises:course_details', course_slug)
 
     return render(request,
-                    'excercises/teachers/excercise_create.html',
-                    {'form': form,
-                            'course': course
-                     })
+                  'exercises/teachers/exercise_create.html',
+                  {'form': form,
+                   'course': course
+                   })
 
 
-def excercise_edit(request, course_slug, excercise_pk):
+def exercise_edit(request, course_slug, exercise_pk):
 
-    excercise = Excercise.objects.get(pk=excercise_pk)
+    exercise = Exercise.objects.get(pk=exercise_pk)
 
-    form = ExcerciseForm(instance=excercise)
+    form = ExerciseForm(instance=exercise)
     if request.method == 'POST':
-        form = ExcerciseForm(request.POST, instance=excercise)
+        form = ExerciseForm(request.POST, instance=exercise)
         if form.is_valid():
             form.save()
-            return redirect(excercise.get_absolute_url())
+            return redirect(exercise.get_absolute_url())
 
     return render(request,
-                  'excercises/teachers/excercise_edit.html',
+                  'exercises/teachers/exercise_edit.html',
                   {'form': form})
