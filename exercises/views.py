@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from .forms import ExerciseForm, UnitForm
@@ -10,7 +11,7 @@ def is_teacher(user):
 
 # Create your views here.
 
-# @login_required(login_url='account:login')
+@login_required
 def course_list(request):
     # user = request.user
 
