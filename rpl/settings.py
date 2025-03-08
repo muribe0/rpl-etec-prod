@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -153,3 +154,10 @@ REDIS_HOST = 'redis'
 REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+
+# LOGGING
+
+LOGIN_REDIRECT_URL = 'exercises:course_list'
+LOGIN_URL = 'account:login'
+LOGOUT_URL = 'account:logout'
+LOGOUT_REDIRECT_URL = 'account:logout'

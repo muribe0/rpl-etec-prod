@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Iniciar sesión
+{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block content %}
+    <h1>Iniciar sesión</h1>
+    {% if form.errors %}
+        <p>
+            Tu usuario o contraseña son incorrectos.
+            Por favor, inténtalo de nuevo.
+        </p>
+    {% endif %}
+    <div class="login-form">
+        <form action="{% url 'account:login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+    </div>
+{% endblock %}
+
