@@ -36,7 +36,7 @@ class Course(models.Model):
             self.slug = f"{original_slug}-{counter}"
             counter += 1
         print(self.slug)
-        super().save(*args, *kwargs)
+        super().save(*args, **kwargs)
 
     def get_url(self, view):
         return reverse(
