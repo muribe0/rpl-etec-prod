@@ -1,16 +1,18 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.conf import settings
-
+from exercises.models import Course
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE
     )
     date_of_birth = models.DateField(blank=True, null=True)
     dni = models.CharField(max_length=9, unique=True)
-    courses = models.ManyToManyField('exercises.Course', related_name='profiles', blank=True)
+    courses = models.ManyToManyField(Course, related_name='profiles', blank=True)
 
     @property #this makes it a getter
     def is_student(self):
@@ -22,7 +24,7 @@ class Profile(models.Model):
 
     @property
     def get_courses(self):
-        return self.user.courses.all()
+        return self.courses.all()
 
     # a CodeSubmission has a FK to Profile, no matter if it's a student or a teacher since both can submit code
 
