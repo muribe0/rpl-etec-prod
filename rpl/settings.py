@@ -161,3 +161,7 @@ LOGIN_REDIRECT_URL = 'exercises:course_list'
 LOGIN_URL = 'account:login'
 LOGOUT_URL = 'account:logout'
 LOGOUT_REDIRECT_URL = 'account:logout'
+
+# EMAIL
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

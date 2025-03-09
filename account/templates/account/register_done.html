@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Bienvenidx
+{% endblock %}
+
+{% block content %}
+    <h1>¡Bienvenidx!</h1>
+    <p>
+        Tu cuenta ha sido creada exitosamente.
+    </p>
+    <p>
+        <a href="{% url 'account:login' %}">Iniciar sesión</a>
+    </p>
+{% endblock %}

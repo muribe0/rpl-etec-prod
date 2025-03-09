@@ -10,6 +10,7 @@
 
 {% block content %}
     <h1>Iniciar sesión</h1>
+    <p>Si no tenes cuenta</p><a href="{% url 'account:register' %}">registrate acá</a><p>.</p>
     {% if form.errors %}
         <p>
             Tu usuario o contraseña son incorrectos.
@@ -23,6 +24,9 @@
             <input type="hidden" name="next" value="{{ next }}"/>
             <button type="submit">Iniciar sesión</button>
         </form>
+        <p>
+            <a href="{% url 'account:password_reset' %}">Olvidaste tu contraseña?</a>
+        </p>
     </div>
 {% endblock %}
 
