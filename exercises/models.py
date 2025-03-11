@@ -18,7 +18,7 @@ class Course(models.Model):
     groups = models.ManyToManyField(Group,
                                     related_name='courses',
                                     blank=True)
-
+    code = models.CharField(max_length=12, unique=True, blank=True, null=True)
     objects = manager.Manager()
 
     def save(self, *args, **kwargs):

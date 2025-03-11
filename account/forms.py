@@ -13,16 +13,21 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         label='Repetir contraseña',
         widget=forms.PasswordInput
     )
-    code = forms.CharField(
-        label='Código de curso',
-        widget=forms.TextInput(attrs={'placeholder': 'El docente debe darles uno.',
-                                      'required': False}),
-    )
+    code = forms.CharField( label='Código de curso',
+                            widget=forms.TextInput(attrs={'placeholder': 'El docente debe darles uno.'}),
+                            required=False )
     date_of_birth = forms.DateField(
         label='Fecha de nacimiento',
         widget=forms.DateInput(attrs={'type': 'date'}),
         required=False
     )
+    dni = forms.CharField(
+        label='DNI',
+        widget=forms.TextInput(attrs={'placeholder': 'Sin puntos ni espacios (solo números).'}),
+        max_length=9,
+        required=True
+    )
+
 
     class Meta:
         model = User
@@ -33,7 +38,7 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         code = cd['code']
         if code:
             for c in code.split('-') :
-                if not (c or type(c) == type(str()) or len(c) == 6):
+                if not (c or type(c) == type(str())):
                     raise forms.ValidationError('El código no es válido')
                 if not Course.objects.filter(code=c).exists():
                     raise forms.ValidationError('El código no es válido')
@@ -55,38 +60,6 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
         return email
 
-
-    def save_student(self, user, courses):
-        cd = self.cleaned_data
-        student = Profile(
-            user=user,
-            dni=cd['dni'],
-            date_of_birth=cd['date_of_birth'],
-        )
-        for c in courses:
-            student.courses.add(c)
-
-        student.save()
-
-        user.groups.add(Group.objects.get_or_create(name='student')[0])
-
-
-    def save_teacher(self, user, courses):
-        cd = self.cleaned_data
-        teacher = Profile(
-            user=user,
-            dni=cd['dni'],
-            date_of_birth=cd['date_of_birth'],
-        )
-        for c in courses:
-            teacher.courses.add(c)
-
-        teacher.save()
-
-        group = Group.objects.get_or_create(name='teacher')[0]
-        user.groups.all().add(group)
-
-
     def create_user(self):
         self.full_clean()
         cd = self.clean()
@@ -96,18 +69,63 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
             email=cd['email'],
             first_name=cd['first_name'],
             last_name=cd['last_name'],
-            paswword = cd['password']
+            password=cd['password']
         )
 
         code = cd['code']
-        if code:
-            code_list = code.split('-')
-            courses = Course.objects.filter(code__in=code_list)
-
-            # If the code starts with T, the user is a teacher
-            if any(map(lambda x: x.first() == 'T', code_list)):
-                self.save_teacher(user, courses)
-            else:
-                self.save_student(user, courses)
+        self.assign_group_and_courses(user, code)
 
         return user
+
+    def create_profile(self, user):
+        cd = self.cleaned_data
+        profile = Profile.objects.create(
+            user=user,
+            dni=cd['dni'],
+            date_of_birth=cd['date_of_birth'],
+        )
+        return profile
+
+    def assign_group_and_courses(self, user, code):
+        code_list = code.split('-')
+
+        is_teacher = code and any(map(lambda x: x.first() == 'PROFE', code_list))
+        if is_teacher:
+            code_list = list(map(lambda x: x[5:] if x[:5] == 'PROFE' else x, code_list))
+            group_name = 'teacher'
+        else:
+            group_name = 'student'
+
+        # assign user to group
+        group, _ = Group.objects.get_or_create(name=group_name)
+        user.groups.add(group)
+
+        # create profile and assign courses
+        courses = Course.objects.filter(code__in=code_list)
+
+        profile = self.create_profile(user)
+        for course in courses:
+            profile.courses.add(course)
+
+
+class UserEditForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        qs = User.objects.filter(email=data).exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise forms.ValidationError('Este email ya está registrado')
+        if not data.endswith('@etec.uba.ar'):
+            raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
+        return data
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['date_of_birth']
+
