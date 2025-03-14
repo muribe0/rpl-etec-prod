@@ -1,0 +1,12 @@
+{% extends 'exercises/base.html' %}
+{% load static %}
+
+{% block title %}
+    Sesión cerrada
+{% endblock %}
+
+{% block content %}
+    <h1>Sesión cerrada</h1>
+    <p>Has cerrado sesión exitosamente.</p>
+    <p>Si deseas iniciar sesión nuevamente, puedes hacerlo <a href="{% url 'account:login' %}">aquí</a>.</p>
+{% endblock %}

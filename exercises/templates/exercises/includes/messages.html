@@ -1,0 +1,24 @@
+{% if messages %}
+    <section class="messages-container" id="messages-container">
+
+        <div class="messages" role="alert">
+            {% for message in messages %}
+                <div class="message message--{{ message.tags }} fade-in">
+                    <div class="message__content">
+                        <span class="message__text">{{ message|safe }}</span>
+                        <a class="message__close" aria-label="Close message">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </a>
+
+                    </div>
+                    <div class="message__progress"></div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </section>
+{% endif %}

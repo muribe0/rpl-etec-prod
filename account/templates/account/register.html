@@ -1,0 +1,14 @@
+{% extends 'exercises/base.html' %}
+
+{% block title %}
+    Crear cuenta
+{% endblock %}
+
+{% block content %}
+    <h1>Crear una cuenta</h1>
+    <form method="post" action="{% url 'account:register' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear cuenta</button>
+    </form>
+{% endblock %}

@@ -39,6 +39,9 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - EMAIL_HOST_USER=rpl.etec@gmail.com
+      - EMAIL_HOST_PASSWORD=wxfq qqau xvgp hhhy
+      - DEFAULT_FROM_EMAIL=RPL <rpl.etec@gmail.com>
     depends_on:
       - db
 
@@ -53,6 +56,9 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - EMAIL_HOST_USER=rpl.etec@gmail.com
+      - EMAIL_HOST_PASSWORD=wxfq qqau xvgp hhhy
+      - DEFAULT_FROM_EMAIL=RPL <rpl.etec@gmail.com>
     depends_on:
       - redis
       - db

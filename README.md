@@ -62,9 +62,9 @@ their courses and submit code.
 
 ### Student Group
 
-Permissions:
+`Permissions:
 
-* Can view their courses (admin-assigned)
+* Can view their courses
 * Can view the course's units
 * Can view the unit's excercises
 * Can submit code for excercises
@@ -79,6 +79,9 @@ Permissions:
 * Can create and edit Excercises
 * Can delete Units and Excercises
 * Can view all Student's Actions
+* Can add and remove students from their courses
+
+`
 
 
 ## Code Submissions

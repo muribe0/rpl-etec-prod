@@ -1,0 +1,18 @@
+{% extends 'exercises/base.html' %}
+{% load static %}
+
+{% block title %}
+    Editar perfil
+{% endblock %}
+
+{% block content %}
+    <h1>Editar perfil</h1>
+
+    <form action="{% url 'account:profile_edit' %}" method="post">
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+        {% csrf_token %}
+        <button type="submit">Guardar cambios</button>
+    </form>
+
+{% endblock %}

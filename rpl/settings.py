@@ -26,12 +26,15 @@ SECRET_KEY = 'django-insecure-e$n@oe8792&68dp&f+)9f%z170!z)@rc6hvdusjb=b^6gbtr=^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DOMAIN = 'localhost'
+
 ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -153,3 +156,28 @@ REDIS_HOST = 'redis'
 REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+
+# LOGGING
+
+LOGIN_REDIRECT_URL = 'exercises:course_list'
+LOGIN_URL = 'account:login'
+LOGOUT_URL = 'account:logout'
+LOGOUT_REDIRECT_URL = 'account:logout'
+
+
+# EMAIL SERVER CONFIGURATION
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+# AUTH BACKEND
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.EmailAuthBackend',
+]
+

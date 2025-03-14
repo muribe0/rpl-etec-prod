@@ -18,7 +18,7 @@ class Course(models.Model):
     groups = models.ManyToManyField(Group,
                                     related_name='courses',
                                     blank=True)
-
+    code = models.CharField(max_length=12, unique=True, blank=True, null=True)
     objects = manager.Manager()
 
     def save(self, *args, **kwargs):
@@ -36,7 +36,7 @@ class Course(models.Model):
             self.slug = f"{original_slug}-{counter}"
             counter += 1
         print(self.slug)
-        super().save(*args, *kwargs)
+        super().save(*args, **kwargs)
 
     def get_url(self, view):
         return reverse(
