@@ -11,6 +11,8 @@ urlpatterns = [
 
     path('register/', views.register, name='register'),
 
+    path('register/confirm/<int:user_pk>/<int:token>/', views.register_confirm, name='register_confirm'),
+
     path('edit/', views.edit, name='profile_edit'),
 
     path(
