@@ -56,15 +56,25 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError('Este email ya está registrado')
         domain = email.split('@')[1]
-        if domain != 'etec.uba.ar':
-            raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
+        # if domain != 'etec.uba.ar':
+        #     raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
         return email
+
+    def clean_dni(self):
+        dni = self.cleaned_data['dni']
+        if not dni.isdigit():
+            raise forms.ValidationError('El DNI debe contener solo números')
+        if len(dni) != 9:
+            raise forms.ValidationError('El DNI debe tener 9 dígitos')
+        if Profile.objects.filter(dni=dni).exists():
+            raise forms.ValidationError('Ya existe un usuario con este DNI')
+        return dni
 
     def create_user(self):
         self.full_clean()
         cd = self.clean()
 
-        user = User.objects.create(
+        user = User.objects.create_user(
             username=cd['email'].split('@')[0],
             email=cd['email'],
             first_name=cd['first_name'],
@@ -119,8 +129,8 @@ class UserEditForm(forms.ModelForm):
         qs = User.objects.filter(email=data).exclude(pk=self.instance.pk)
         if qs.exists():
             raise forms.ValidationError('Este email ya está registrado')
-        if not data.endswith('@etec.uba.ar'):
-            raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
+        # if not data.endswith('@etec.uba.ar'):
+        #     raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
         return data
 
 
