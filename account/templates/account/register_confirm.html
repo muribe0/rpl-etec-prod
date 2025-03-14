@@ -1,0 +1,22 @@
+{% extends 'exercises/base.html' %}
+
+{% block title %}
+    Registro confirmado
+{% endblock %}
+
+
+{% block content %}
+    <h1>¡Bienvenidx!</h1>
+    {% if validlink %}
+        <p>
+            Tu cuenta ha sido creada exitosamente.
+        </p>
+        <p>
+            <a href="{% url 'account:login' %}">Iniciar sesión</a>
+        </p>
+    {% else %}
+        <p>
+            Hubo un error.
+        </p>
+    {% endif %}
+{% endblock %}
