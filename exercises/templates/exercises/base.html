@@ -22,7 +22,7 @@
                 </li>
             {% else %}
                 <li><a href="{% url 'account:login' %}">Iniciar sesión</a></li>
-                {# <li><a href="{% url 'users:register' %}">Registrarse</a></li> #}
+                <li><a href="{% url 'account:register' %}">Registrarse</a></li>
             {% endif %}
             {% block navbar %}
             {% endblock %}
