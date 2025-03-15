@@ -1,22 +1,20 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from account.decorators import teacher_required
 from .forms import ExerciseForm, UnitForm
 from .models import File, Course, Unit, Exercise
-from submissions.models import CodeSubmission
 from submissions.forms import CodeSubmissionForm
 
-def is_teacher(user):
-    return user.is_authenticated() and 'teacher' in user.groups
+from account.decorators import teacher_required
 
-# Create your views here.
 
 @login_required
 def course_list(request):
     # user = request.user
 
-    # courses = user.created.all() if is_teacher(user) else user.subscribed.all()
-    courses = Course.objects.all()
+    courses = request.user.profile.courses.all()
     context = {
         'courses': courses,
     }
@@ -25,9 +23,12 @@ def course_list(request):
                   context)
 
 
-# @login_required(login_url='account:login')
+@login_required
 def course_details(request, course_slug):
     course = Course.objects.get(slug=course_slug)
+    if course not in request.user.profile.courses.all():
+        messages.error(request, 'Error. No tienes acceso a este curso.') # TODO migrate to decorator
+        return redirect('exercises:course_list')
     units = course.units.all()
     context = {
         'units': units,
@@ -38,7 +39,8 @@ def course_details(request, course_slug):
                   'exercises/common/course_details.html',
                   context)
 
-
+@login_required
+@teacher_required
 def unit_create(request, course_slug):
     course = Course.objects.get(slug=course_slug)
     form = UnitForm()
@@ -56,6 +58,8 @@ def unit_create(request, course_slug):
                   {'form': form,
                    'course': course})
 
+@login_required
+@teacher_required
 def unit_edit(request, course_slug, unit_pk):
     unit = Unit.objects.get(pk=unit_pk)
     form = UnitForm(instance=unit)
@@ -71,6 +75,7 @@ def unit_edit(request, course_slug, unit_pk):
                    'unit': unit},
                   )
 
+@login_required
 def exercise_details(request, course_slug, exercise_pk):
 
     exercise = Exercise.objects.get(pk=exercise_pk)
@@ -92,6 +97,8 @@ def exercise_details(request, course_slug, exercise_pk):
                   context)
 
 
+@login_required
+@teacher_required
 def exercise_create(request, course_slug):
     course = Course.objects.get(slug=course_slug)
     form = ExerciseForm()
@@ -110,7 +117,8 @@ def exercise_create(request, course_slug):
                    'course': course
                    })
 
-
+@login_required
+@teacher_required
 def exercise_edit(request, course_slug, exercise_pk):
 
     exercise = Exercise.objects.get(pk=exercise_pk)
