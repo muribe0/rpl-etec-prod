@@ -50,7 +50,7 @@ services:
     build:
       context: .
     command: ["./scripts/wait-for-it.sh", "db:5432", "--",
-              "celery", "-A", "rpl", "worker", "--loglevel=info"] # turn info off in production
+              "celery", "-A", "rpl", "worker", "--loglevel=info", "--purge"] # turn info off in production
     environment:
       - DJANGO_SETTINGS_MODULE=rpl.settings
       - POSTGRES_DB=postgres
