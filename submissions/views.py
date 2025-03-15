@@ -1,4 +1,5 @@
 import json
+from random import randint
 
 from celery.result import AsyncResult
 from django.http import JsonResponse
@@ -12,6 +13,8 @@ from .forms import CodeSubmissionForm
 from .models import CodeSubmission
 
 from .tasks import test_code
+
+from .service import test_code_sync
 
 
 
@@ -46,7 +49,7 @@ def submit_api(request):
 
         # async task
         res = test_code.delay(submission.pk).id
-        print(res)
+
         return JsonResponse({
             "submission_id": submission.pk,
             "task_id": res
@@ -63,6 +66,7 @@ def submit_api(request):
     finally:
         pass
 
+@csrf_exempt
 def results_api(request, task_id):
     """
     API endpoint to get the results of a task. The task_id is the id of the task that was returned when the code was submitted.
@@ -70,6 +74,8 @@ def results_api(request, task_id):
     :param task_id: id of the task to get the results from.
     :return: JSON response with the results of the task.
     """
+
+
     task_result = AsyncResult(task_id, app=test_code)
 
     if task_result.ready() and task_result.failed():
@@ -78,9 +84,10 @@ def results_api(request, task_id):
             "results": "Task not found"
         }, status=500)
 
-    result = task_result.get()
+    result = task_result.get(timeout=5)
+    # result = CodeSubmission.objects.filter().last().result
 
     return JsonResponse({
-        "results": result
+        "results": str(result)
     }, status=200)
 
