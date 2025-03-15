@@ -99,9 +99,9 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
     def assign_group_and_courses(self, user, code):
         code_list = code.split('-')
 
-        is_teacher = code and any(map(lambda x: x.first() == 'PROFE', code_list))
+        is_teacher = code and any(map(lambda x: str(x).startswith('PROFE'), code_list))
         if is_teacher:
-            code_list = list(map(lambda x: x[5:] if x[:5] == 'PROFE' else x, code_list))
+            code_list = list(map(lambda x: x if str(x).startswith('PROFE') else x, code_list))
             group_name = 'teacher'
         else:
             group_name = 'student'
