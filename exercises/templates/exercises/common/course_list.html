@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    <h1>Mis cursos</h1>
     {% for course in courses %}
         <a href="{{ course.get_absolute_url }}">
             <p>{{ course.title }}</p>
