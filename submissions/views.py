@@ -2,12 +2,14 @@ import json
 from random import randint
 
 from celery.result import AsyncResult
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 
+from account.decorators import api_login_required
 from exercises.models import Exercise
 from .forms import CodeSubmissionForm
 from .models import CodeSubmission
@@ -20,6 +22,7 @@ from .service import test_code_sync
 
 @require_POST
 @csrf_exempt
+@api_login_required
 def submit_api(request):
     """
     API endpoint to submit code for testing.
@@ -27,6 +30,13 @@ def submit_api(request):
     :return: JSON response with the submission_id and task_id of the task that was created to test the code.
     """
     # TODO: check authenticity of request (correct user, exercise, etc)
+    try:
+        profile = request.user.profile
+    except AttributeError:
+        return JsonResponse({
+            "error": "User not authenticated"
+        }, status=403)
+
     try:
         data = json.loads(request.body)
         code = data.get('code', "")
@@ -41,7 +51,7 @@ def submit_api(request):
             with transaction.atomic():
                 exercise = Exercise.objects.get(pk=exercise_pk)
                 submission = CodeSubmission.objects.create(exercise=exercise,
-                                                   code=code)
+                                                   code=code, profile=request.user.profile)
         except Exception as e:
             return JsonResponse({
                 "error": str(e)
@@ -67,6 +77,7 @@ def submit_api(request):
         pass
 
 @csrf_exempt
+@api_login_required
 def results_api(request, task_id):
     """
     API endpoint to get the results of a task. The task_id is the id of the task that was returned when the code was submitted.
@@ -91,3 +102,40 @@ def results_api(request, task_id):
         "results": str(result)
     }, status=200)
 
+
+@require_GET
+@api_login_required
+def previous_submissions_api(request):
+    try:
+        data = json.loads(request.body)
+        exercise_pk = data.get('exercise_pk', None)
+        if not exercise_pk:
+            return JsonResponse({
+                "error": "Exercise pk not provided"
+            }, status=400)
+
+        exercise = Exercise.objects.get(pk=exercise_pk)
+    except Exercise.DoesNotExist:
+        return JsonResponse({
+            "error": "Exercise not found"
+        }, status=404)
+
+    try:
+        user_submissions = request.user.profile.submissions.all().filter(exercise=exercise)
+    except CodeSubmission.DoesNotExist:
+        return JsonResponse({
+            "error": "No submissions found"
+        }, status=404)
+
+    submissions = []
+    for submission in user_submissions:
+        submissions.append({
+            "submission_id": submission.pk,
+            "code": submission.code,
+            "result": submission.result,
+            "success": submission.success
+        })
+
+    return JsonResponse({
+        "submissions": submissions
+    }, status=200)
