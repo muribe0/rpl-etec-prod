@@ -1,12 +1,32 @@
 <form id="submit-code-form" >
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+        <div class="form-group">
+{#            {{ field.label_tag }}#}
+            {{ field.errors }}
+
+            {{ field }} <!-- This is the textarea input field -->
+
+        </div>
+    {% endfor %}
     <button id="submit-btn" type="submit">Enviar</button>
 </form>
 <div id="results-container">
-    {{ test_result }}
+
     <div id="loading-overlay"></div>
     <h2 id="result-title"></h2>
     <pre id="result-code"></pre>
+
+    {% if previous_submissions %}
+        <h2 id="previous-results-title">Anteriores intentos</h2>
+        {% for submission in previous_submissions %}
+            <div class="previous-result">
+                <p>{{ submission.created_at }}</p>
+                <pre>{{ submission.code }}</pre>
+                <p>{{ submission.result }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
 
 </div>
