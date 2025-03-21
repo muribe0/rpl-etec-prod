@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 
 from exercises.models import Course
 from .models import Profile
+
 
 class ProfileAndUserRegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -13,9 +15,9 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         label='Repetir contraseña',
         widget=forms.PasswordInput
     )
-    code = forms.CharField( label='Código de curso',
-                            widget=forms.TextInput(attrs={'placeholder': 'El docente debe darles uno.'}),
-                            required=False )
+    code = forms.CharField(label='Código de curso',
+                           widget=forms.TextInput(attrs={'placeholder': 'El docente debe darles uno.'}),
+                           required=False)
     date_of_birth = forms.DateField(
         label='Fecha de nacimiento',
         widget=forms.DateInput(attrs={'type': 'date'}),
@@ -28,19 +30,19 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         required=True
     )
 
-
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email']
 
     def clean_code(self):
         cd = self.cleaned_data
         code = cd['code']
         if code:
-            for c in code.split('-') :
+            for c in code.split('-'):
                 if not (c or type(c) == type(str())):
                     raise forms.ValidationError('El código no es válido')
-                if not Course.objects.filter(code=c).exists():
+                pure_code = c.split('PROFE')[1] if c.startswith('PROFE') else c
+                if not Course.objects.filter(code=pure_code).exists():
                     raise forms.ValidationError('El código no es válido')
 
         return code
@@ -53,8 +55,14 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
+
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Este email ya está registrado')
+            # if the email is already registered, check if it was confirmed or not
+            if User.objects.get(email=email).is_active:
+                raise forms.ValidationError('Este email ya está registrado')
+
+            raise forms.ValidationError(
+                f'Este email ya está registrado pero no fue confirmado. Revisa tu correo o consulta a {settings.SUPPORT_EMAIL}')
         domain = email.split('@')[1]
         # if domain != 'etec.uba.ar':
         #     raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
@@ -111,6 +119,7 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         user.groups.add(group)
 
         # create profile and assign courses
+        code_list = list(map(lambda x: x.split('PROFE')[1] if str(x).startswith('PROFE') else x, code_list))
         courses = Course.objects.filter(code__in=code_list)
 
         profile = self.create_profile(user)
@@ -119,7 +128,6 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
 
 
 class UserEditForm(forms.ModelForm):
-
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
@@ -129,8 +137,8 @@ class UserEditForm(forms.ModelForm):
         qs = User.objects.filter(email=data).exclude(pk=self.instance.pk)
         if qs.exists():
             raise forms.ValidationError('Este email ya está registrado')
-        # if not data.endswith('@etec.uba.ar'):
-        #     raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
+        if not data.endswith('@etec.uba.ar'):
+            raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
         return data
 
 
@@ -138,4 +146,3 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['date_of_birth']
-
