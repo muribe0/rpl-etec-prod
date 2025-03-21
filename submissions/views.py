@@ -16,9 +16,6 @@ from .models import CodeSubmission
 
 from .tasks import test_code
 
-from .service import test_code_sync
-
-
 
 @require_POST
 @csrf_exempt
