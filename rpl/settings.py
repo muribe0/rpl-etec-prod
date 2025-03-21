@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e$n@oe8792&68dp&f+)9f%z170!z)@rc6hvdusjb=b^6gbtr=^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-DOMAIN = 'localhost'
+DOMAIN = '127:0:0:1:8000'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -181,3 +181,5 @@ AUTHENTICATION_BACKENDS = [
     'account.authentication.EmailAuthBackend',
 ]
 
+# EMAIL SUPPORT
+SUPPORT_EMAIL = 'rpl.etec@gmail.com'
