@@ -1,13 +1,21 @@
 {% extends 'exercises/base.html' %}
 {% load static %}
+{% load exercises_tags %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'submissions/css/prism.css' %}">
+    <link rel="stylesheet" href="{% static 'submissions/css/prism_live.css' %}">
+{% endblock %}
 
 {% block script %}
     <script src="{% static 'submissions/js/submit.js' %}"></script>
+    <script src="{% static 'submissions/js/prism.js' %}"></script>
+    <script src="{% static 'submissions/js/prism_live.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     <p>{{ exercise.title }}</p>
-    <p>{{ exercise.statement }}</p>
+    <p>{{ exercise.statement|markdown }}</p>
 
     {% include 'submissions/includes/submit_code_form.html' %}
 

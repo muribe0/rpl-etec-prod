@@ -7,14 +7,15 @@ from .forms import ExerciseForm, UnitForm
 from .models import File, Course, Unit, Exercise
 from submissions.forms import CodeSubmissionForm
 
-from account.decorators import teacher_required
+from account.decorators import teacher_required, profile_required
 
 
 @login_required
+@profile_required
 def course_list(request):
-    # user = request.user
+    user = request.user
 
-    courses = request.user.profile.courses.all()
+    courses = user.profile.courses.all()
     context = {
         'courses': courses,
     }
@@ -76,6 +77,7 @@ def unit_edit(request, course_slug, unit_pk):
                   )
 
 @login_required
+@profile_required
 def exercise_details(request, course_slug, exercise_pk):
 
     exercise = Exercise.objects.get(pk=exercise_pk)
@@ -87,9 +89,13 @@ def exercise_details(request, course_slug, exercise_pk):
     if request.method == 'POST':
         form = CodeSubmissionForm(request.POST)
 
+    previous_submissions = exercise.submissions.filter(profile=request.user.profile)
+
+
     context = {
         'exercise': exercise,
         'form': form,
+        'previous_submissions': previous_submissions,
     }
 
     return render(request,
