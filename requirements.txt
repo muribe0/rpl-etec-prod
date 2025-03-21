@@ -19,3 +19,5 @@ tzdata==2025.1
 uWSGI==2.0.28
 vine==5.1.0
 wcwidth==0.2.13
+
+Markdown~=3.7
