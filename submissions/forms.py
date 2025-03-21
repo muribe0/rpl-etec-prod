@@ -10,7 +10,12 @@ class CodeSubmissionForm(forms.ModelForm):
         fields = ["code"]
 
         widgets = {
-            "code": Textarea(attrs={"cols": 40, "rows": 5})
+            "code": Textarea(
+                attrs={
+                    "cols": 40,
+                    "rows": 8,
+                    "class": "prism-live line-numbers language-python fill prim-live-source"
+                })
         }
 
         error_messages = {
