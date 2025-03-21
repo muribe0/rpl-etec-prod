@@ -38,3 +38,16 @@ def api_login_required(view_function):
             }, status=403)
         return view_function(request, *args, **kwargs)
     return wrapper
+
+def profile_required(view_function):
+    """
+    Decorator for views that checks that the authenticated user has a Profile.
+    """
+    def wrapper(request, *args, **kwargs):
+        try:
+            request.user.profile
+        except Exception:
+            messages.error(request, 'Error. Debes tener un perfil para ingresar a esta página.')
+            return redirect('account:login')
+        return view_function(request, *args, **kwargs)
+    return wrapper
