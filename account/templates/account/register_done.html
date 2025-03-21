@@ -1,4 +1,5 @@
 {% extends 'exercises/base.html' %}
+{% load account_tags %}
 
 {% block title %}
     Bienvenidx
@@ -7,5 +8,5 @@
    <h1>Creación de cuenta</h1>
     <p>Hemos enviado instrucciones para confirmar tu mail a {{ new_user.email }}</p>
     <p>Si no recibes un mail, asegurate de haber ingresado la dirección de correo correcta
-        (debe finalizar con @etec.uba.ar) y/o escribe a rpl.etec@gmail.com explicando tu problema</p>
+        (debe finalizar con @etec.uba.ar) y/o escribe a {{ support_email }} explicando tu problema</p>
 {% endblock %}
