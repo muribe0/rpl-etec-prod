@@ -1,37 +1,125 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8" >
-    <title>{% block title %}{% endblock %}</title>
-    {% block script %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}rpl.etec{% endblock %}</title>
+
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="{% static 'exercises/css/base.css' %}">
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Page-specific CSS -->
+    {% block extra_css %}{% endblock %}
+
     {% block style %}{% endblock %}
 </head>
-
 <body>
-    <div>
-        <ul>
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container navbar-container">
+        <a href="{% url 'exercises:course_list' %}" class="navbar-logo">
+           rpl.etec
+        </a>
+
+        <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+
+        <ul class="navbar-nav">
             {% if request.user.is_authenticated %}
-                <li><a href="{% url 'exercises:course_list' %}">Mis cursos</a></li>
-                <li>
-                    <form method="post" action="{% url 'account:logout' %}">
+                <li class="navbar-nav-item">
+                    <a href="{% url 'exercises:course_list' %}" class="navbar-nav-link {% if request.resolver_match.url_name == 'course_list' %}nav-active{% endif %}">
+                        Mis cursos
+                    </a>
+                </li>
+                <li class="navbar-nav-item">
+                    <form method="post" action="{% url 'account:logout' %}" id="logout-form" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
                     </form>
+                    <a href="#" class="navbar-nav-link" onclick="document.getElementById('logout-form').submit(); return false;">
+                        Cerrar sesión
+                    </a>
                 </li>
             {% else %}
-                <li><a href="{% url 'account:login' %}">Iniciar sesión</a></li>
-                <li><a href="{% url 'account:register' %}">Registrarse</a></li>
+                <li class="navbar-nav-item">
+                    <a href="{% url 'account:login' %}" class="navbar-nav-link {% if request.resolver_match.url_name == 'login' %}nav-active{% endif %}">
+                        Iniciar sesión
+                    </a>
+                </li>
+                <li class="navbar-nav-item">
+                    <a href="{% url 'account:register' %}" class="navbar-nav-link {% if request.resolver_match.url_name == 'register' %}nav-active{% endif %}">
+                        Registrarse
+                    </a>
+                </li>
             {% endif %}
-            {% block navbar %}
-            {% endblock %}
+
+            {% block navbar %}{% endblock %}
         </ul>
     </div>
+</nav>
 
-    {% include 'exercises/includes/messages.html' %}
+<!-- Messages -->
+{% include 'exercises/includes/messages.html' %}
 
-    {% block content %}
-    {% endblock %}
+<!-- Main Content -->
+{% block content %}{% endblock %}
+
+{#<!-- Footer -->#}
+{#<footer class="footer">#}
+{#    <div class="container">#}
+{#        <div class="grid">#}
+{#            <div class="col-4 col-md-12">#}
+{#                <h4 class="text-primary-lighter mb-2">EducaPlus</h4>#}
+{#                <p class="text-gray-300">Plataforma educativa para el aprendizaje colaborativo.</p>#}
+{#            </div>#}
+{#            <div class="col-4 col-md-6 col-sm-12">#}
+{#                <h5 class="text-primary-lighter mb-2">Enlaces</h5>#}
+{#                <ul class="footer-links">#}
+{#                    <li class="my-1"><a href="{% url 'exercises:course_list' %}" class="footer-link">Cursos</a></li>#}
+{#                    {% if request.user.is_authenticated %}#}
+{#                        <li class="my-1"><a href="{% url 'account:profile_edit' %}" class="footer-link">Mi perfil</a></li>#}
+{#                    {% else %}#}
+{#                        <li class="my-1"><a href="{% url 'account:login' %}" class="footer-link">Iniciar sesión</a></li>#}
+{#                        <li class="my-1"><a href="{% url 'account:register' %}" class="footer-link">Registrarse</a></li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </div>#}
+{#            <div class="col-4 col-md-6 col-sm-12">#}
+{#                <h5 class="text-primary-lighter mb-2">Contacto</h5>#}
+{#                <p class="text-gray-300">support@educaplus.com</p>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="text-center my-3">#}
+{#            <p class="text-gray-300">&copy; {% now "Y" %} EducaPlus. Todos los derechos reservados.</p>#}
+{#        </div>#}
+{#    </div>#}
+{#</footer>#}
+
+<!-- Updated messages template for toast-style messages -->
+<script>
+    // Create message container if it doesn't exist
+    if (!document.getElementById('messages-container')) {
+        const messagesContainer = document.createElement('div');
+        messagesContainer.id = 'messages-container';
+        document.body.appendChild(messagesContainer);
+    }
+</script>
+
+<!-- Base JavaScript -->
+<script src="{% static 'exercises/js/main.js' %}"></script>
+
+<!-- Page-specific JavaScript -->
+{% block script %}{% endblock %}
+{% block extra_js %}{% endblock %}
 </body>
 </html>

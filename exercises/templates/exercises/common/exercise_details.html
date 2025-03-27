@@ -2,21 +2,84 @@
 {% load static %}
 {% load exercises_tags %}
 
+{% block title %}
+    {{ exercise.title }} - Exercise
+{% endblock %}
+
 {% block style %}
     <link rel="stylesheet" href="{% static 'submissions/css/prism.css' %}">
-    <link rel="stylesheet" href="{% static 'submissions/css/prism_live.css' %}">
+    <link rel="stylesheet" href="{% static 'exercises/css/exercise_details.css' %}">
 {% endblock %}
 
 {% block script %}
     <script src="{% static 'submissions/js/submit.js' %}"></script>
     <script src="{% static 'submissions/js/prism.js' %}"></script>
-    <script src="{% static 'submissions/js/prism_live.js' %}"></script>
+    <script src="{% static 'exercises/js/exercise_details.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <p>{{ exercise.title }}</p>
-    <p>{{ exercise.statement|markdown }}</p>
+    <div class="exercise-container">
+        <div class="exercise-header">
+            <h1 class="exercise-title">{{ exercise.title }}</h1>
+            <div class="exercise-meta">
+                <div id="exercise-difficulty" data-difficulty="{{ exercise.dificulty }}">
+                    <span class="difficulty-label">Dificultad:</span>
+                    <!-- Dots will be added by JavaScript -->
+                </div>
+                <div class="exercise-function">Nombre de la función: <code>{{ exercise.function_name }}</code></div>
+            </div>
+        </div>
 
-    {% include 'submissions/includes/submit_code_form.html' %}
+        <div class="exercise-main">
+            <div class="exercise-statement">
+                <h2>Enunciado</h2>
+                {{ exercise.statement|markdown }}
+            </div>
 
+            <div class="exercise-code-section">
+                <div class="exercise-code-editor">
+                    <div class="editor-header">
+                        <div class="editor-title">Editor de texto marca ACME</div>
+                    </div>
+                    <form id="submit-code-form">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                            <div class="form-group">
+                                {{ field.errors }}
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <button id="submit-btn" type="submit">Enviar respuesta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div id="results-container">
+                <div id="loading-overlay"></div>
+                <h2 id="result-title"></h2>
+                <pre id="result-code"></pre>
+
+                {% if previous_submissions %}
+                    <div class="previous-submissions-header">
+                        <h2 id="previous-results-title">Intentos previos</h2>
+                        <button id="toggle-previous-btn">Ocultar Intentos Previos</button>
+                    </div>
+                    <div id="previous-submissions">
+                        {% for submission in previous_submissions %}
+                            <div class="previous-result">
+                                <p class="timestamp">{{ submission.created_at }}</p>
+                                <pre>{{ submission.code }}</pre>
+                                <p class="{% if submission.succes %}result-success{% else %}result-failed{% endif %}">
+                                    {{ submission.result }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
