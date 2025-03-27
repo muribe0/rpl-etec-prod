@@ -34,7 +34,11 @@ def test_code(submission_id):
         try:
             service = CodeTestingService(submission_id)
             results = service.run_tests()
-            
+
+            if "OK" in results:
+                submission.succes = True
+                submission.save()
+
             # Use transaction for saving results
             submission.result = results
             submission.save()
