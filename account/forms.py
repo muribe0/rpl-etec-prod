@@ -64,8 +64,8 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError(
                 f'Este email ya está registrado pero no fue confirmado. Revisa tu correo o consulta a {settings.SUPPORT_EMAIL}')
         domain = email.split('@')[1]
-        # if domain != 'etec.uba.ar':
-        #     raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
+        if domain != 'etec.uba.ar':
+            raise forms.ValidationError('El email debe ser de la ETEC (terminar con @etec.uba.ar)')
         return email
 
     def clean_dni(self):
