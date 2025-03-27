@@ -89,7 +89,7 @@ def exercise_details(request, course_slug, exercise_pk):
     if request.method == 'POST':
         form = CodeSubmissionForm(request.POST)
 
-    previous_submissions = exercise.submissions.filter(profile=request.user.profile)
+    previous_submissions = exercise.submissions.filter(profile=request.user.profile).order_by('-created_at')
 
 
     context = {
@@ -138,4 +138,5 @@ def exercise_edit(request, course_slug, exercise_pk):
 
     return render(request,
                   'exercises/teachers/exercise_edit.html',
-                  {'form': form})
+                  {'form': form,
+                           'exercise': exercise})
