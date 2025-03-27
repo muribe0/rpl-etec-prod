@@ -1,12 +1,68 @@
 {% extends 'exercises/base.html' %}
+{% load static %}
 {% load account_tags %}
 
-{% block title %}
-    Bienvenidx
+{% block title %}Registro Completo{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'account/css/auth.css' %}">
 {% endblock %}
+
 {% block content %}
-   <h1>Creación de cuenta</h1>
-    <p>Hemos enviado instrucciones para confirmar tu mail a {{ new_user.email }}</p>
-    <p>Si no recibes un mail, asegurate de haber ingresado la dirección de correo correcta
-        (debe finalizar con @etec.uba.ar) y/o escribe a {{ support_email }} explicando tu problema</p>
+    <div class="auth-container">
+        <div class="auth-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1d2554" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                <circle cx="14" cy="15" r="3"></circle>
+                <line x1="8" y1="9" x2="16" y2="9"></line>
+                <line x1="8" y1="13" x2="10" y2="13"></line>
+                <line x1="8" y1="17" x2="10" y2="17"></line>
+            </svg>
+        </div>
+
+        <div class="auth-card fade-slide-up">
+            <div class="auth-confirmation">
+                <div class="auth-confirmation-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2v16h-20v-16h20zm2-2h-24v20h24v-20z"></path>
+                        <path d="M16 16v1h-8v-1"></path>
+                        <path d="M12 12v-6l-2 2"></path>
+                    </svg>
+                </div>
+                <h1 class="auth-confirmation-title">¡Cuenta Creada Exitosamente!</h1>
+                <p class="auth-confirmation-message">
+                    Hemos enviado un correo de confirmación a
+                    <span class="auth-confirmation-email">{{ new_user.email }}</span>.
+                    Por favor, revisa tu bandeja de entrada y sigue las instrucciones para activar tu cuenta.
+                </p>
+
+                <div class="auth-next-steps">
+                    <h3 class="auth-next-steps-title">Próximos Pasos</h3>
+                    <ul class="auth-next-steps-list">
+                        <li class="auth-next-steps-item">
+                            <span class="auth-next-steps-number">1</span>
+                            <span>Revisa tu correo electrónico, incluida la carpeta de spam</span>
+                        </li>
+                        <li class="auth-next-steps-item">
+                            <span class="auth-next-steps-number">2</span>
+                            <span>Haz clic en el enlace de confirmación recibido</span>
+                        </li>
+                        <li class="auth-next-steps-item">
+                            <span class="auth-next-steps-number">3</span>
+                            <span>Inicia sesión en la plataforma con tus credenciales</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="auth-confirmation-message" style="margin-top: var(--space-lg);">
+                    Si no recibes el correo en los próximos minutos, revisa tu carpeta de spam o contacta a
+                    <a href="mailto:{{ support_email }}">{{ support_email }}</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="auth-alternate">
+            <a href="{% url 'account:login' %}">Volver a la página de inicio de sesión</a>
+        </div>
+    </div>
 {% endblock %}

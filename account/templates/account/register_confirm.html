@@ -1,22 +1,69 @@
 {% extends 'exercises/base.html' %}
+{% load static %}
 
-{% block title %}
-    Registro confirmado
+{% block title %}Registro Confirmado{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'account/css/auth.css' %}">
 {% endblock %}
 
-
 {% block content %}
-    <h1>¡Bienvenidx!</h1>
-    {% if validlink %}
-        <p>
-            Tu cuenta ha sido creada exitosamente.
-        </p>
-        <p>
-            <a href="{% url 'account:login' %}">Iniciar sesión</a>
-        </p>
-    {% else %}
-        <p>
-            Hubo un error.
-        </p>
-    {% endif %}
+    <div class="auth-container">
+        <div class="auth-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1d2554" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                <circle cx="14" cy="15" r="3"></circle>
+                <line x1="8" y1="9" x2="16" y2="9"></line>
+                <line x1="8" y1="13" x2="10" y2="13"></line>
+                <line x1="8" y1="17" x2="10" y2="17"></line>
+            </svg>
+        </div>
+
+        <div class="auth-card fade-slide-up">
+            <div class="auth-confirmation">
+                {% if validlink %}
+                    <div class="auth-confirmation-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <h1 class="auth-confirmation-title">¡Registro Exitoso!</h1>
+                    <p class="auth-confirmation-message">
+                        Tu cuenta ha sido verificada y activada correctamente. Ya puedes acceder a todos los recursos y actividades de la plataforma.
+                    </p>
+                    <a href="{% url 'account:login' %}" class="btn btn-primary">Iniciar Sesión</a>
+                {% else %}
+                    <div class="auth-confirmation-icon" style="background-color: #fff5f5;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <h1 class="auth-confirmation-title">Enlace No Válido</h1>
+                    <p class="auth-confirmation-message">
+                        El enlace de confirmación que has utilizado no es válido o ha expirado. Por favor, intenta registrarte nuevamente o contacta a soporte.
+                    </p>
+                    <div class="auth-next-steps">
+                        <h3 class="auth-next-steps-title">¿Qué puedo hacer?</h3>
+                        <ul class="auth-next-steps-list">
+                            <li class="auth-next-steps-item">
+                                <span class="auth-next-steps-number">1</span>
+                                <span>Vuelve a la página de <a href="{% url 'account:register' %}">registro</a> para crear una nueva cuenta</span>
+                            </li>
+                            <li class="auth-next-steps-item">
+                                <span class="auth-next-steps-number">2</span>
+                                <span>Asegúrate de ingresar un correo electrónico válido</span>
+                            </li>
+                            <li class="auth-next-steps-item">
+                                <span class="auth-next-steps-number">3</span>
+                                <span>Si el problema persiste, contacta a soporte técnico</span>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
