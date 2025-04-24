@@ -72,8 +72,8 @@ class ProfileAndUserRegistrationForm(forms.ModelForm):
         dni = self.cleaned_data['dni']
         if not dni.isdigit():
             raise forms.ValidationError('El DNI debe contener solo números')
-        if len(dni) != 9:
-            raise forms.ValidationError('El DNI debe tener 9 dígitos')
+        if len(dni) != 8:
+            raise forms.ValidationError('El DNI debe tener 8 dígitos')
         if Profile.objects.filter(dni=dni).exists():
             raise forms.ValidationError('Ya existe un usuario con este DNI')
         return dni
