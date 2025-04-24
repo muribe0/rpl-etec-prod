@@ -47,7 +47,13 @@
                         {% for field in form %}
                             <div class="form-group">
                                 {{ field.errors }}
-                                {{ field }}
+                                {% if field.name == 'code' %}
+                                    <textarea name="{{ field.name }}" id="{{ field.auto_id }}"
+                                              class="code-editor" spellcheck="false" autocomplete="off"
+                                              autocorrect="off" autocapitalize="off">{{ exercise.initial_code }}</textarea>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
                             </div>
                         {% endfor %}
                         <button id="submit-btn" type="submit">Enviar respuesta</button>
