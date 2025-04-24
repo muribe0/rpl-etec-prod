@@ -28,9 +28,9 @@ class UnitAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
-# @admin.register(Exercise)
-# class ExerciseAdmin(admin.ModelAdmin):
-#     list_display = ('pk', 'title', 'unit__title')
-#     search_fields = ('title', 'slug')
-#     ordering = ('pk',)
-#     prepopulated_fields = {'slug': ('title',)}
+@admin.register(Exercise)
+class ExerciseAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'title', 'unit__title')
+    search_fields = ('title', 'slug')
+    ordering = ('pk',)
+    prepopulated_fields = {'slug': ('title',)}

@@ -1,32 +1,75 @@
 {% extends 'exercises/base.html' %}
 {% load static %}
 
-{% block title %}
-    Iniciar sesión
-{% endblock %}
+{% block title %}Iniciar Sesión{% endblock %}
 
-{% block script %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'account/css/auth.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>Iniciar sesión</h1>
-    <p>Si no tenes cuenta</p><a href="{% url 'account:register' %}">registrate acá</a><p>.</p>
-    {% if form.errors %}
-        <p>
-            Tu usuario o contraseña son incorrectos.
-            Por favor, inténtalo de nuevo.
-        </p>
-    {% endif %}
-    <div class="login-form">
-        <form action="{% url 'account:login' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="hidden" name="next" value="{{ next }}"/>
-            <button type="submit">Iniciar sesión</button>
-        </form>
-        <p>
-            <a href="{% url 'account:password_reset' %}">Olvidaste tu contraseña?</a>
-        </p>
+    <div class="auth-container">
+        <div class="auth-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1d2554" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                <circle cx="14" cy="15" r="3"></circle>
+                <line x1="8" y1="9" x2="16" y2="9"></line>
+                <line x1="8" y1="13" x2="10" y2="13"></line>
+                <line x1="8" y1="17" x2="10" y2="17"></line>
+            </svg>
+        </div>
+
+        <div class="auth-card fade-slide-up">
+            <div class="auth-header">
+                <h1 class="auth-title">Iniciar Sesión</h1>
+                <p class="auth-subtitle">Bienvenido a la plataforma educativa</p>
+            </div>
+
+            {% if form.errors %}
+                <div class="auth-error">
+                    <div class="auth-error-title">Error de inicio de sesión</div>
+                    <div class="auth-error-message">Tu usuario o contraseña son incorrectos. Por favor, inténtalo de nuevo.</div>
+                </div>
+            {% endif %}
+
+            <form action="{% url 'account:login' %}" method="post">
+                {% csrf_token %}
+
+                <div class="auth-form-group">
+                    <label for="{{ form.username.id_for_label }}" class="auth-label">Correo Electrónico</label>
+                    <input type="email" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="auth-input" placeholder="ejemplo@etec.uba.ar" required>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.password.id_for_label }}" class="auth-label">Contraseña</label>
+                    <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="auth-input" placeholder="Ingresa tu contraseña" required>
+                </div>
+
+                <div class="auth-actions">
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                    <button type="submit" class="btn btn-primary auth-submit">Iniciar Sesión</button>
+                </div>
+
+                <div class="auth-alternate" style="margin-top: var(--space-lg);">
+                    <a href="{% url 'account:password_reset' %}">¿Olvidaste tu contraseña?</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="auth-alternate">
+            ¿No tienes una cuenta? <a href="{% url 'account:register' %}">Regístrate aquí</a>
+        </div>
     </div>
 {% endblock %}
 
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto focus on first field
+            const emailInput = document.getElementById('{{ form.username.id_for_label }}');
+            if (emailInput) {
+                emailInput.focus();
+            }
+        });
+    </script>
+{% endblock %}

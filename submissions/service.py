@@ -42,8 +42,7 @@ class CodeTestingService:
                 except:
                     raise ValueError("Submission does not have an exercise")
 
-                f.write(exercise.get_complete_test_code(f'solution_{self.unique_id}.py'))
-
+                f.write(exercise.get_complete_test_code(f'solution_{self.unique_id}'))
             yield self.test_dir
 
         finally:  # once test_dir has been used, we delete everything
@@ -93,27 +92,34 @@ class CodeTestingService:
             # Create a runner with custom timeout
             runner = unittest.TextTestRunner(stream=full_output, verbosity=2)
 
-            # save the original run method
-            original_run = runner.run
-
-            # replace the run method with timeout version
-            runner.run = self.timeout_wrapper(4)(original_run)
-
             # Run the tests with the timeout-enabled run method
-            result = runner.run(suite)
+            import threading
+            thread = threading.Thread(target=runner.run, args=(suite,))
+            # set the thread as a daemon so it is killed when the main thread is killed
+            thread.daemon = True
+            # start the thread
+            thread.start()
+            # wait for the thread to finish or timeout
+            thread.join(4)
 
-            return self.format_results(result, full_output)
+            # if the thread is still alive, it means it has not finished
+            if thread.is_alive():
+                # raise this exception to let celery task handle it
+                raise SoftTimeLimitExceeded
 
+        return str(full_output.getvalue())
 
     @staticmethod
     def cleanup_directory(directory):
-        for root, dirs, files in os.walk(directory, topdown=False):
-            for name in files:
-                os.remove(os.path.join(root, name))
-            for name in dirs:
-                os.rmdir(os.path.join(root, name))
-        os.rmdir(directory)
-
+        try:
+            for root, dirs, files in os.walk(directory, topdown=False):
+                for name in files:
+                    os.remove(os.path.join(root, name))
+                for name in dirs:
+                    os.rmdir(os.path.join(root, name))
+            os.rmdir(directory)
+        except FileNotFoundError:
+            pass
 
     def _get_file_test_code(self):
         with open('submissions/testing/test_suma.py', 'r') as f:
@@ -147,3 +153,13 @@ class CodeTestingService:
 
 
 
+def test_code_sync(submission_id):
+    from submissions.models import CodeSubmission
+
+    service = CodeTestingService(submission_id)
+    results = service.run_tests()
+    submission = CodeSubmission.objects.get(pk=submission_id)
+
+    submission.result = results['output']
+    submission.save()
+    return results['output']

@@ -1,0 +1,347 @@
+/* Registration Flow Styles */
+.auth-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md);
+}
+
+.auth-card {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.auth-title {
+    font-size: var(--text-3xl);
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+}
+
+.auth-subtitle {
+    color: var(--gray-600);
+    font-size: var(--text-lg);
+}
+
+.auth-logo {
+    margin-bottom: var(--space-lg);
+    text-align: center;
+}
+
+.auth-logo-img {
+    height: 80px;
+    margin: 0 auto;
+}
+
+.auth-form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.auth-label {
+    display: block;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: var(--space-sm);
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    padding: var(--space-md);
+    font-size: var(--text-base);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.auth-input:focus {
+    border-color: var(--primary-light);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(145, 189, 225, 0.3);
+}
+
+.auth-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.auth-form-error {
+    color: #dc3545;
+    font-size: var(--text-sm);
+    margin-top: var(--space-xs);
+}
+
+.auth-form-help {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+    margin-top: var(--space-xs);
+}
+
+.auth-actions {
+    margin-top: var(--space-xl);
+}
+
+.auth-submit {
+    width: 100%;
+    padding: var(--space-md);
+    font-weight: 600;
+    font-size: var(--text-base);
+}
+
+.auth-alternate {
+    text-align: center;
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+}
+
+.auth-alternate a {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.auth-alternate a:hover {
+    text-decoration: underline;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--space-lg) 0;
+    color: var(--gray-500);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--gray-300);
+}
+
+.auth-divider::before {
+    margin-right: var(--space-md);
+}
+
+.auth-divider::after {
+    margin-left: var(--space-md);
+}
+
+/* Confirmation page styles */
+.auth-confirmation {
+    text-align: center;
+    padding: var(--space-xl) 0;
+}
+
+.auth-confirmation-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-lg);
+    background-color: var(--primary-lighter);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-confirmation-icon svg {
+    width: 40px;
+    height: 40px;
+    color: var(--primary);
+}
+
+.auth-confirmation-title {
+    font-size: var(--text-2xl);
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+}
+
+.auth-confirmation-message {
+    color: var(--gray-700);
+    margin-bottom: var(--space-lg);
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-confirmation-email {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.auth-next-steps {
+    background-color: var(--primary-lighter);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-top: var(--space-lg);
+    text-align: left;
+}
+
+.auth-next-steps-title {
+    font-size: var(--text-lg);
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+    font-weight: 600;
+}
+
+.auth-next-steps-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.auth-next-steps-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+    color: var(--gray-700);
+}
+
+.auth-next-steps-item:last-child {
+    margin-bottom: 0;
+}
+
+.auth-next-steps-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-right: var(--space-md);
+    flex-shrink: 0;
+}
+
+/* Error page section */
+.auth-error {
+    background-color: #fff5f5;
+    border-left: 4px solid #dc3545;
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-radius: var(--radius-sm);
+}
+
+.auth-error-title {
+    color: #dc3545;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+.auth-error-message {
+    color: var(--gray-700);
+    font-size: var(--text-sm);
+}
+
+.auth-success {
+    background-color: #f0fff4;
+    border-left: 4px solid #38a169;
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-radius: var(--radius-sm);
+}
+
+.auth-success-title {
+    color: #38a169;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+/* Animation for auth pages */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-slide-up {
+    animation: fadeSlideUp 0.5s ease-out forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: var(--space-md);
+    }
+
+    .auth-card {
+        padding: var(--space-lg);
+    }
+
+    .auth-title {
+        font-size: var(--text-2xl);
+    }
+
+    .auth-subtitle {
+        font-size: var(--text-base);
+    }
+}
+
+/* Additional styles for login/logout pages */
+
+/* Remember me checkbox */
+.auth-checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.auth-checkbox {
+    margin-right: var(--space-sm);
+    width: 18px;
+    height: 18px;
+}
+
+.auth-checkbox-label {
+    font-size: var(--text-sm);
+    color: var(--gray-700);
+}
+
+/* Logout success indicators */
+.auth-logout-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #38a169;
+    color: white;
+    margin-right: var(--space-sm);
+}
+
+.logout-timer {
+    display: block;
+    text-align: center;
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+}
+
+/* Session timeout warning */
+.session-timeout {
+    display: flex;
+    align-items: center;
+    background-color: var(--primary-lighter);
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+}
+
+.timeout-icon {
+    margin-right: var(--space-sm);
+    color: var(--primary);
+}

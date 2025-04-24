@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e$n@oe8792&68dp&f+)9f%z170!z)@rc6hvdusjb=b^6gbtr=^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-DOMAIN = 'localhost'
+DOMAIN = '127:0:0:1:8000'
 
 ALLOWED_HOSTS = ["localhost", "92.112.176.144", "127.0.0.1"]
 
@@ -181,6 +181,7 @@ AUTHENTICATION_BACKENDS = [
     'account.authentication.EmailAuthBackend',
 ]
 
+<<<<<<< HEAD
 # HTTPS settings
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
@@ -188,3 +189,7 @@ CSRF_COOKIE_SECURE = False
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+=======
+# EMAIL SUPPORT
+SUPPORT_EMAIL = 'rpl.etec@gmail.com'
+>>>>>>> origin/main

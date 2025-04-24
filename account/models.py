@@ -8,10 +8,11 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='profile'
     )
     date_of_birth = models.DateField(blank=True, null=True)
-    dni = models.CharField(max_length=9, unique=True)
+    dni = models.CharField(max_length=8, unique=True)
     courses = models.ManyToManyField(Course, related_name='profiles', blank=True)
 
     @property #this makes it a getter
