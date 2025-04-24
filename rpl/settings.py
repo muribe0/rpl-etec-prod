@@ -28,7 +28,7 @@ DEBUG = True
 
 DOMAIN = 'localhost'
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost", "92.112.176.144", "127.0.0.1"]
 
 
 # Application definition
@@ -181,3 +181,10 @@ AUTHENTICATION_BACKENDS = [
     'account.authentication.EmailAuthBackend',
 ]
 
+# HTTPS settings
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
