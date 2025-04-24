@@ -2,10 +2,39 @@ upstream uwsgi_app {
     server unix:/app/uwsgi.sock;
 }
 
+# HTTP server - redirect to HTTPS except for Let's Encrypt challenge
 server {
     listen 80;
-    server_name ${DOMAIN} www.${DOMAIN} localhost;
+    server_name ${NAME_DOMAIN} www.${NAME_DOMAIN} ${DOMAIN} localhost;
     
+    # For certbot challenges
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    # Redirect all other HTTP requests to HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# HTTPS server
+server {
+    listen 443 ssl;
+    server_name ${NAME_DOMAIN} www.${NAME_DOMAIN};
+    
+    # SSL certificates
+    ssl_certificate /etc/letsencrypt/live/${NAME_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${NAME_DOMAIN}/privkey.pem;
+    
+    # Recommended SSL settings
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256';
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    
+    # Your existing proxy configuration
     location / {
         proxy_pass http://rpl:8000;
         proxy_set_header Host $host;
