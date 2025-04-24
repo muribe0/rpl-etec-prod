@@ -1,31 +1,152 @@
 {% extends 'exercises/base.html' %}
+{% load static %}
 
-{% block title %}
-    Unidades
+{% block title %}{{ course.title }} | Detalles del Curso{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'exercises/css/course-details.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>{{ course.title }}</h1>
-    <p>{{ course.description }}</p>
-    <a href="{{ course.get_exercise_create_url }}">Crear ejercicio</a>
-    <a href="{{ course.get_unit_create_url }}">Crear unidad</a>
-    {% for unit in units %}
-        <div>
-            <p>{{ unit.title }}</p>
-            <a href="{{ unit.get_edit_url }}">Editar unidad</a>
-            {% for exercise in unit.exercises.all %}
-                <div>
-                    <a href="{{ exercise.get_absolute_url }}">
-                        {{ exercise.title }}
-                    </a>
-                    <a href="{{ exercise.get_edit_url }}">Editar ejercicio</a>
+    <div class="container">
+        <section class="course-header">
+            <div class="container">
+                <h1 class="course-title">{{ course.title }}</h1>
+                {% if course.description %}
+                    <p class="course-description">{{ course.description }}</p>
+                {% endif %}
+
+                {% if request.user.profile.is_teacher %}
+                    <div class="course-actions">
+                        <a href="{{ course.get_exercise_create_url }}" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Crear Ejercicio
+                        </a>
+                        <a href="{{ course.get_unit_create_url }}" class="btn btn-outline-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Crear Unidad
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <main>
+            {% if request.user.profile.is_teacher %}
+                <section class="teacher-controls">
+                    <h2 class="teacher-controls-title">Panel de Control - Docente</h2>
+                    <div class="teacher-actions">
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Editar Curso
+                        </a>
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Gestionar Estudiantes
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                            Ver Estadísticas
+                        </a>
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="units-container">
+                <div class="units-header">
+                    <h2 class="units-title">Unidades del Curso</h2>
                 </div>
 
-            {% empty %}
-                <p>Esta unidad no tiene ejercicios.</p>
-            {% endfor %}
-        </div>
-    {% empty %}
-        <p>Este curso no tiene unidades.</p>
-    {% endfor %}
+                {% if units %}
+                    {% for unit in units %}
+                        <div class="unit" id="unit-{{ unit.pk }}">
+                            <div class="unit-header">
+                                <h3 class="unit-title">{{ unit.title }}</h3>
+                                <button class="unit-toggle" aria-label="Toggle unit content">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="unit-content">
+                                {% if unit.description %}
+                                    <div class="unit-description">{{ unit.description }}</div>
+                                {% endif %}
+
+                                {% if request.user.profile.is_teacher %}
+                                    <div class="unit-actions">
+                                        <a href="{{ unit.get_edit_url }}" class="btn btn-outline-primary btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                            Editar Unidad
+                                        </a>
+                                    </div>
+                                {% endif %}
+
+                                {% if unit.exercises.all %}
+                                    <ul class="exercises-list">
+                                        {% for exercise in unit.exercises.all %}
+                                            <li class="exercise-item">
+                                                <span class="exercise-title">{{ exercise.title }}</span>
+                                                <div class="exercise-actions">
+                        <span class="exercise-difficulty" title="Dificultad: {{ exercise.dificulty }} de 5">
+                          {% for i in '12345' %}
+                              <span class="difficulty-dot {% if forloop.counter <= exercise.dificulty %}active{% endif %}"></span>
+                          {% endfor %}
+                        </span>
+                                                    <a href="{{ exercise.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                                        Ver Ejercicio
+                                                    </a>
+                                                    {% if request.user.profile.is_teacher %}
+                                                        <a href="{{ exercise.get_edit_url }}" class="btn btn-outline-primary btn-sm">
+                                                            Editar
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <div class="unit-empty">
+                                        <h4 class="unit-empty-title">Esta unidad no tiene ejercicios</h4>
+                                        <p class="unit-empty-text">{% if request.user.profile.is_teacher %}Puedes crear ejercicios usando el botón "Crear Ejercicio" en la parte superior.{% else %}Pronto se añadirán ejercicios a esta unidad.{% endif %}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="unit-empty">
+                        <h3 class="unit-empty-title">Este curso no tiene unidades</h3>
+                        <p class="unit-empty-text">{% if request.user.profile.is_teacher %}Puedes crear unidades usando el botón "Crear Unidad" en la parte superior.{% else %}Pronto se añadirán unidades a este curso.{% endif %}</p>
+                        {% if request.user.profile.is_teacher %}
+                            <a href="{{ course.get_unit_create_url }}" class="btn btn-primary">Crear Primera Unidad</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'exercises/js/course-details.js' %}"></script>
 {% endblock %}

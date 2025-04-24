@@ -1,7 +1,6 @@
 {% if messages %}
-    <section class="messages-container" id="messages-container">
-
-        <div class="messages" role="alert">
+    <div id="messages-container">
+        <div class="messages">
             {% for message in messages %}
                 <div class="message message--{{ message.tags }} fade-in">
                     <div class="message__content">
@@ -13,12 +12,10 @@
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
                         </a>
-
                     </div>
                     <div class="message__progress"></div>
                 </div>
             {% endfor %}
         </div>
-
-    </section>
+    </div>
 {% endif %}

@@ -10,7 +10,18 @@ class CodeSubmissionForm(forms.ModelForm):
         fields = ["code"]
 
         widgets = {
-            "code": Textarea(attrs={"cols": 40, "rows": 5})
+            "code": Textarea(
+                attrs={
+                    #"class": "code-editor prism-live line-numbers language-python fill prim-live-source",
+                    "class": "code-editor",
+                    "cols": 40,
+                    "rows": 8,
+                    "style": "width: 100%; height: 100%; resize: none;",
+                    "spellcheck": "false",
+                    "autocomplete": "off",
+                    "autocorrect": "off",
+                    "autocapitalize": "off",
+                })
         }
 
         error_messages = {
@@ -18,4 +29,3 @@ class CodeSubmissionForm(forms.ModelForm):
                 "max_length": "Has alcanzado el límite de caracteres."
             }
         }
-

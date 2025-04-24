@@ -1,14 +1,116 @@
 {% extends 'exercises/base.html' %}
+{% load static %}
 
-{% block title %}
-    Crear cuenta
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'account/css/auth.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>Crear una cuenta</h1>
-    <form method="post" action="{% url 'account:register' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Crear cuenta</button>
-    </form>
+    <div class="auth-container">
+        <div class="auth-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1d2554" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                <circle cx="14" cy="15" r="3"></circle>
+                <line x1="8" y1="9" x2="16" y2="9"></line>
+                <line x1="8" y1="13" x2="10" y2="13"></line>
+                <line x1="8" y1="17" x2="10" y2="17"></line>
+            </svg>
+        </div>
+
+        <div class="auth-card fade-slide-up">
+            <div class="auth-header">
+                <h1 class="auth-title">Crear una Cuenta</h1>
+                <p class="auth-subtitle">Únete a nuestra plataforma educativa</p>
+            </div>
+
+            <form method="post" action="{% url 'account:register' %}">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="auth-error">
+                        <div class="auth-error-title">Error al crear la cuenta</div>
+                        <div class="auth-error-message">{{ form.non_field_errors }}</div>
+                    </div>
+                {% endif %}
+
+                <div class="auth-form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="auth-label">Nombre</label>
+                    {{ form.first_name.errors }}
+                    <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" class="auth-input {% if form.first_name.errors %}is-invalid{% endif %}" value="{{ form.first_name.value|default:'' }}" placeholder="Ingresa tu nombre">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.last_name.id_for_label }}" class="auth-label">Apellido</label>
+                    {{ form.last_name.errors }}
+                    <input type="text" name="{{ form.last_name.name }}" id="{{ form.last_name.id_for_label }}" class="auth-input {% if form.last_name.errors %}is-invalid{% endif %}" value="{{ form.last_name.value|default:'' }}" placeholder="Ingresa tu apellido">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.email.id_for_label }}" class="auth-label">Correo Electrónico</label>
+                    {{ form.email.errors }}
+                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="auth-input {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value|default:'' }}" placeholder="ejemplo@etec.uba.ar">
+                    <div class="auth-form-help">Tu correo institucional será tu nombre de usuario</div>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.dni.id_for_label }}" class="auth-label">DNI</label>
+                    {{ form.dni.errors }}
+                    <input type="text" name="{{ form.dni.name }}" id="{{ form.dni.id_for_label }}" class="auth-input {% if form.dni.errors %}is-invalid{% endif %}" value="{{ form.dni.value|default:'' }}" placeholder="Sin puntos ni espacios (solo números)">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.date_of_birth.id_for_label }}" class="auth-label">Fecha de Nacimiento</label>
+                    {{ form.date_of_birth.errors }}
+                    <input type="date" name="{{ form.date_of_birth.name }}" id="{{ form.date_of_birth.id_for_label }}" class="auth-input {% if form.date_of_birth.errors %}is-invalid{% endif %}" value="{{ form.date_of_birth.value|default:'' }}">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.code.id_for_label }}" class="auth-label">Código de Curso</label>
+                    {{ form.code.errors }}
+                    <input type="text" name="{{ form.code.name }}" id="{{ form.code.id_for_label }}" class="auth-input {% if form.code.errors %}is-invalid{% endif %}" value="{{ form.code.value|default:'' }}" placeholder="El docente debe darte este código">
+                    <div class="auth-form-help">Si no lo sabes, pidele al docente el código.</div>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.password.id_for_label }}" class="auth-label">Contraseña</label>
+                    {{ form.password.errors }}
+                    <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="auth-input {% if form.password.errors %}is-invalid{% endif %}" placeholder="Crea una contraseña segura">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="{{ form.password2.id_for_label }}" class="auth-label">Confirmar Contraseña</label>
+                    {{ form.password2.errors }}
+                    <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" class="auth-input {% if form.password2.errors %}is-invalid{% endif %}" placeholder="Repite tu contraseña">
+                </div>
+
+                <div class="auth-actions">
+                    <button type="submit" class="btn btn-primary auth-submit">Crear Cuenta</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="auth-alternate">
+            ¿Ya tienes una cuenta? <a href="{% url 'account:login' %}">Iniciar sesión</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus the first empty field with no errors
+            const formGroups = document.querySelectorAll('.auth-form-group');
+            for (const group of formGroups) {
+                const input = group.querySelector('.auth-input');
+                const errors = group.querySelector('.auth-form-error');
+
+                if (!errors && (!input.value || input.value === '')) {
+                    input.focus();
+                    break;
+                }
+            }
+        });
+    </script>
 {% endblock %}

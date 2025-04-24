@@ -1,11 +1,13 @@
 from django.db import models
 from exercises.models import Exercise
+from account.models import Profile
 
 # Create your models here.
 class CodeSubmission(models.Model):
-    # student = models.ForeignKey(Student,
-                                # on_delete=models.CASCADE,
-                                # related_name="user_submissions")
+    profile = models.ForeignKey(Profile,
+                            on_delete=models.CASCADE,
+                            related_name="submissions",
+                            )
     created_at = models.DateTimeField(auto_now_add=True)
 
     exercise = models.ForeignKey(Exercise,

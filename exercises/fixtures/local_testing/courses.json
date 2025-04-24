@@ -3,8 +3,9 @@
     "model": "exercises.course",
     "pk": 1,
     "fields" : {
-      "title": "Taller de Algoritmos y Programación",
-      "groups": [1]
+      "title": "Test course",
+      "groups": [1],
+      "code": "T35T"
     }
   }
 ]

@@ -1,0 +1,181 @@
+{% extends 'exercises/base.html' %}
+{% load static %}
+
+{% block title %}Crear Nuevo Ejercicio{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'exercises/css/exercise_edit.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <section class="exercise-edit-header">
+            <div class="container">
+                <h1 class="exercise-edit-title">Crear Nuevo Ejercicio</h1>
+                <p class="exercise-edit-subtitle">Crea desafíos educativos para tus estudiantes</p>
+            </div>
+        </section>
+
+        <main>
+            <div class="edit-form-container">
+                <form action="{{ course.get_exercise_create_url }}" method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Información Básica
+                        </h2>
+
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                            {{ form.title.errors }}
+                            <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control {% if form.title.errors %}is-invalid{% endif %}" value="{{ form.title.value|default:'' }}" placeholder="Ej: Cálculo de Fibonacci">
+                            <span class="form-help">Utiliza un título claro y descriptivo para el ejercicio</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.statement.id_for_label }}" class="form-label">{{ form.statement.label }}</label>
+                            {{ form.statement.errors }}
+                            <textarea name="{{ form.statement.name }}" id="{{ form.statement.id_for_label }}" class="form-control {% if form.statement.errors %}is-invalid{% endif %}" placeholder="Describe el problema que deben resolver los estudiantes...">{{ form.statement.value|default:'' }}</textarea>
+                            <span class="form-help">Describe el problema y los objetivos del ejercicio. Puedes usar formato **negrita** y *cursiva*.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.unit.id_for_label }}" class="form-label">{{ form.unit.label }}</label>
+                            {{ form.unit.errors }}
+                            {{ form.unit }}
+                            <span class="form-help">Selecciona a qué unidad pertenece este ejercicio</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Dificultad</label>
+                            <div class="difficulty-selector">
+                                {% for i in "12345" %}
+                                    <div class="difficulty-option {% if forloop.counter == 1 %}selected{% endif %}">
+                                        <input type="radio" name="dificulty" id="difficulty-{{ forloop.counter }}" value="{{ forloop.counter }}" class="difficulty-input"
+                                               {% if forloop.counter == 1 %}checked{% endif %}>
+                                        <label for="difficulty-{{ forloop.counter }}" class="difficulty-label">{{ forloop.counter }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <span class="form-help">Indica el nivel de dificultad del ejercicio (1 = fácil, 5 = difícil)</span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            Código y Pruebas
+                        </h2>
+
+                        <div class="form-group">
+                            <label for="{{ form.function_name.id_for_label }}" class="form-label">{{ form.function_name.label }}</label>
+                            {{ form.function_name.errors }}
+                            <input type="text" name="{{ form.function_name.name }}" id="{{ form.function_name.id_for_label }}" class="form-control {% if form.function_name.errors %}is-invalid{% endif %}" value="{{ form.function_name.value|default:'' }}" placeholder="Ej: calcular_fibonacci">
+                            <span class="form-help">Nombre de la función que los estudiantes deben implementar</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.initial_code.id_for_label }}" class="form-label">{{ form.initial_code.label }}</label>
+                            {{ form.initial_code.errors }}
+                            <div class="code-editor-container">
+                                <div class="code-editor-header">
+                                    <span class="code-editor-title">Python</span>
+                                </div>
+                                <textarea name="{{ form.initial_code.name }}" id="{{ form.initial_code.id_for_label }}" class="form-control code-area {% if form.initial_code.errors %}is-invalid{% endif %}" placeholder="def mi_funcion():
+    # código inicial que verán los estudiantes
+    pass">{{ form.initial_code.value|default:'' }}</textarea>
+                            </div>
+                            <span class="form-help">Código inicial que verán los estudiantes (incluye la definición de la función con el nombre correcto)</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.test.id_for_label }}" class="form-label">{{ form.test.label }}</label>
+                            {{ form.test.errors }}
+                            <div class="code-editor-container">
+                                <div class="code-editor-header">
+                                    <span class="code-editor-title">Código de Prueba</span>
+                                    <div class="code-editor-tabs">
+                                        <div class="code-editor-tab active">Python</div>
+                                    </div>
+                                </div>
+                                <textarea name="{{ form.test.name }}" id="{{ form.test.id_for_label }}" class="form-control code-area {% if form.test.errors %}is-invalid{% endif %}" placeholder="import unittest
+
+class TestEjercicio(unittest.TestCase):
+    def test_caso_basico(self):
+        self.assertEqual(foo(5), 5)">{{ form.test.value|default:'' }}</textarea>
+                            </div>
+                            <span class="form-help">Código de prueba para validar las soluciones de los estudiantes. Usa 'foo' para referirte a la función del estudiante.</span>
+                        </div>
+
+                        {% if form.solution %}
+                            <div class="form-group">
+                                <label for="{{ form.solution.id_for_label }}" class="form-label">{{ form.solution.label }} (Opcional)</label>
+                                {{ form.solution.errors }}
+                                <div class="code-editor-container">
+                                    <div class="code-editor-header">
+                                        <span class="code-editor-title">Solución</span>
+                                    </div>
+                                    <textarea name="{{ form.solution.name }}" id="{{ form.solution.id_for_label }}" class="form-control code-area {% if form.solution.errors %}is-invalid{% endif %}" placeholder="def mi_funcion():
+    # solución correcta del ejercicio
+    return resultado">{{ form.solution.value|default:'' }}</textarea>
+                                </div>
+                                <span class="form-help">Solución del ejercicio (solo visible para docentes)</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            Consejos para Crear Buenos Ejercicios
+                        </h2>
+
+                        <ul class="tips-list">
+                            <li>Redacta consignas claras y detalladas</li>
+                            <li>Proporciona ejemplos de entrada/salida cuando sea necesario</li>
+                            <li>Escribe pruebas que cubran diferentes casos</li>
+                            <li>Considera situaciones límite o especiales</li>
+                            <li>Proporciona un código inicial que oriente al estudiante</li>
+                        </ul>
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="form-actions-secondary">
+                            <a href="{{ course.get_absolute_url }}" class="btn btn-outline-primary">Cancelar</a>
+                            <button type="button" id="preview-btn" class="btn btn-outline-secondary">Vista Previa</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Crear Ejercicio</button>
+                    </div>
+                </form>
+
+                <div id="preview-container" class="preview-container" style="display: none;">
+                    <h3 class="preview-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Vista Previa del Ejercicio
+                    </h3>
+                    <div id="preview-content" class="preview-content"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'exercises/js/exercise_edit.js' %}"></script>
+{% endblock %}
