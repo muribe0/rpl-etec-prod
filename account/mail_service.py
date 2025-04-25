@@ -15,7 +15,7 @@ def send_confirmation_email(user):
     token = token if token > 0 else -token
     subject = 'Confirmación de registro'
     message = f'Por favor, confirma tu registro copiando esto en el enlace de la pagina: \n\n' \
-              f'/account/register/confirm/{user_pk}/{token}/ \n\n' \
+              f'https://{settings.NAME_DOMAIN}/account/register/confirm/{user_pk}/{token}/ \n\n' \
               f'Si no te registraste, ignora este mensaje.'
 
     return send_mail(subject, message, None, [user.email], fail_silently=False)
