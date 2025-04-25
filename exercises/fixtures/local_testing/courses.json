@@ -7,5 +7,15 @@
       "groups": [1],
       "code": "T35T"
     }
+  },
+  {
+    "model": "exercises.course",
+    "pk": 2,
+    "fields" : {
+      "title": "AED",
+      "slug":"aed",
+      "groups": [1],
+      "code": "A3D"
+    }
   }
 ]
