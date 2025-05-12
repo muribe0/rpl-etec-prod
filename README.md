@@ -2,6 +2,12 @@
 
 django re-purposed version of rpl2.0
 
+# Try it
+Available at
+[www.rpletec.fun](www.rpletec.fun)
+
+# Notes
+
 ## Concurrent Code Submission Handler
 
 ```mermaid
