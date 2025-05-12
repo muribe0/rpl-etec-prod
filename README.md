@@ -3,8 +3,7 @@
 django re-purposed version of rpl2.0
 
 # Try it
-Available at
-[www.rpletec.fun](www.rpletec.fun)
+Available for users outside the organization at www.rpletec.fun using email: cvuser@cv.user pass: cvmauricio
 
 # Notes
 
